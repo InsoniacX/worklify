@@ -1,11 +1,14 @@
-function App() {
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Dashboard } from "@/pages";
+
+const App = () => {
   return (
-    <>
-      <div className="flex items-center justify-center w-50 h-50 bg-blue-500">
-        Hello World
-      </div>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+      </Routes>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;

@@ -16,6 +16,23 @@ export const fetchAll = async(req, res) => {
     }
 }
 
+/** 
+ * Fetch Last 5 Products that has been Added
+ * METHOD = GET
+ * URI = http://localhost:8080/api/product/latest
+ */
+export const latestProduct = async(req, res) => {
+    try {
+        const product = await Product.find()
+        .sort({ _id: -1 })
+        .limit(5);
+        
+        res.status(200).json(product);
+    } catch(error) {
+        res.status(500).json({error:error.message});
+    } 
+}
+
 /**
  * Create a Product Data and Put it in the Database
  * METHOD = POST

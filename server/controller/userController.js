@@ -1,6 +1,11 @@
 import { request } from "express";
 import User from "../model/userModel.js";
 
+/**
+ * Fetch all users Data
+ * METHOD: GET
+ * URI: http://localhost:8080/api/user
+ */
 export const fetchAll = async(req, res) => {
     try {
         console.log("Narik Datanya dulu ya kontol...")
@@ -13,6 +18,28 @@ export const fetchAll = async(req, res) => {
     }
 }
 
+/**
+ * Fetch last 5 users that just Stored
+ * METHOD: GET
+ * URI: http://localhost:8080/api/user/recent
+ */
+export const fetchRecent = async (req, res) => {
+  try {
+    const users = await User.find()
+      .sort({ _id: -1 })
+      .limit(5);
+
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+/**
+ * Fetch user Data by ID
+ * METHOD: GET
+ * URI: http://localhost:8080/api/user/:id
+ */
 export const fetchById = async(req, res) => {
     try { 
         console.log("AWAS LU NGENTOT...")
@@ -24,6 +51,11 @@ export const fetchById = async(req, res) => {
     }
 }
 
+/**
+ * Create user Data
+ * METHOD: POST
+ * URI: http://localhost:8080/user
+ */
 export const createUser = async(req, res) => {
     try {
         const newUser = new User(req.body);
@@ -40,6 +72,11 @@ export const createUser = async(req, res) => {
     }
 }
 
+/**
+ * Update user Data
+ * METHOD: PATCH
+ * URI: http://localhost:8080/user/:id
+ */
 export const updateUser = async(req, res) => {
     try{
         const user = await User.findById(req.params.id);
@@ -58,6 +95,11 @@ export const updateUser = async(req, res) => {
     }
 }
 
+/**
+ * Show the Create User Page
+ * METHOD: GET
+ * URI: http://localhost:8080/user/new
+ */
 export const createPage = async(req, res) => {
     try {
 
@@ -66,6 +108,11 @@ export const createPage = async(req, res) => {
     }
 }
 
+/**
+ * DELETE user data
+ * METHOD: DELETE
+ * URI: http://localhost:8080/user/:id
+ */
 export const removeUser = async(req, res) => {
     try {
         const user = await User.findById(req.params.id);

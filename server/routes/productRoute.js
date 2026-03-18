@@ -1,6 +1,7 @@
 import express from "express";
 import { 
     fetchAll, 
+    latestProduct,
     createProduct, 
     fetchById, 
     removeProduct 
@@ -9,6 +10,8 @@ import {
 const router = express.Router();
 
 router.get('/', fetchAll)
+
+router.get('/latest', latestProduct);
 
 router.post('/', createProduct)
 
