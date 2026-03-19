@@ -3,8 +3,6 @@ export interface Product {
     name: string;   
     brand: string;
     category: string;
-    quantity: number;
-    from: string;
-    to: string;
-    sender: string;
+    stock: number;
+    supplier: string;
 }

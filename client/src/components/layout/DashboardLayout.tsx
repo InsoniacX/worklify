@@ -1,8 +1,13 @@
 import { Avatar } from "../ui";
 import NavItem from "../ui/NavItem";
 import type { ReactNode } from "react";
-import { MdOutlineSpaceDashboard, MdQueryStats } from "react-icons/md";
-import { FiUser, FiPackage, FiClock } from "react-icons/fi";
+import {
+  MdAccessTime,
+  MdBarChart,
+  MdDashboard,
+  MdInventory,
+  MdPeople,
+} from "react-icons/md";
 
 export interface DashboardLayoutProps {
   children: ReactNode;
@@ -10,35 +15,68 @@ export interface DashboardLayoutProps {
 }
 
 const navLinks = [
-  { label: "Home", url: "/", icon: <MdOutlineSpaceDashboard /> },
-  { label: "Users", url: "/users", icon: <FiUser /> },
-  { label: "Product", url: "/products", icon: <FiPackage /> },
-  { label: "Report", url: "/report", icon: <MdQueryStats /> },
-  { label: "Activity", url: "/activity", icon: <FiClock /> },
+  {
+    section: "Main",
+    items: [
+      {
+        url: "/dashboard",
+        label: "Dashboard",
+        icon: <MdDashboard size={14} />,
+      },
+      {
+        url: "dashboard/users",
+        label: "Users",
+        icon: <MdPeople size={14} />,
+      },
+      {
+        url: "dashboard/products",
+        label: "Products",
+        icon: <MdInventory size={14} />,
+      },
+    ],
+  },
+  {
+    section: "Analytics",
+    items: [
+      {
+        url: "dashboard/reports",
+        label: "Reports",
+        icon: <MdBarChart size={14} />,
+      },
+      {
+        url: "dashboard/activity",
+        label: "Activity",
+        icon: <MdAccessTime size={14} />,
+      },
+    ],
+  },
 ];
 
 const DashboardLayout = ({ children, title }: DashboardLayoutProps) => {
   return (
     <div className="flex min-h-screen bg-[#0a0a09] text-neutral-300 font-sans">
-      {/* ── Sidebar ── */}
+      {/* Sidebar */}
       <aside className="w-50 shrink-0 bg-[#0f0f0d] border-r border-neutral-900 flex flex-col">
         {/* Logo */}
         <div className="px-5 pt-5 pb-6 text-[15px] font-medium text-neutral-100">
-          <span className="text-blue-400">●</span> myapp
+          <span className="text-blue-400">●</span> GCI Dashboard
         </div>
 
         {/* Nav */}
-        <p className="px-5 text-[10px] font-medium tracking-widest uppercase text-neutral-700 mb-1.5">
-          Main
-        </p>
-
-        {navLinks.map((navlink) => (
-          <NavItem
-            key={navlink.label}
-            url={navlink.url}
-            label={navlink.label}
-            icon={navlink.icon}
-          />
+        {navLinks.map((group) => (
+          <div key={group.section}>
+            <p className="px-5 text-[10px] font-medium tracking-[0.12em] uppercase text-[#444441] mb-1.5 mt-4 first:mt-0">
+              {group.section}
+            </p>
+            {group.items.map((item) => (
+              <NavItem
+                key={item.url}
+                url={item.url}
+                label={item.label}
+                icon={item.icon}
+              />
+            ))}
+          </div>
         ))}
 
         {/* Footer */}
@@ -50,7 +88,7 @@ const DashboardLayout = ({ children, title }: DashboardLayoutProps) => {
         </div>
       </aside>
 
-      {/* ── Main ── */}
+      {/*  Main  */}
       <main className="flex-1 p-6 overflow-auto">
         {/* Topbar */}
         <div className="flex items-center justify-between mb-6">
@@ -71,7 +109,6 @@ const DashboardLayout = ({ children, title }: DashboardLayoutProps) => {
           </span>
         </div>
 
-        {/* Page content goes here */}
         {children}
       </main>
     </div>

@@ -1,89 +1,157 @@
-import type { User } from "@/types";
+import { Avatar, Pill } from "@/components/ui";
+import type { Product, User } from "@/types";
 
-interface Props {
+interface UserTableProps {
   users: User[];
+  loading: boolean;
+  title?: string;
+  buttonLabel: string;
+  url: string;
 }
 
-const Avatar = ({ name }: { name: string }) => {
-  const initials = name
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-
+export const UserTable = ({
+  users,
+  loading,
+  title = "Latest users",
+  buttonLabel,
+  url,
+}: UserTableProps) => {
   return (
-    <div className="w-8 h-8 rounded-full bg-blue-950 border border-blue-800 text-blue-400 flex items-center justify-center text-[11px] font-medium shrink-0">
-      {initials}
-    </div>
-  );
-};
-
-const StatusDot = () => (
-  <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2 align-middle" />
-);
-
-const UserTable = ({ users }: Props) => {
-  return (
-    <div className="bg-[#0f0f0d] border border-neutral-800 rounded-2xl p-6 w-full">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-5">
-        <span className="text-[11px] font-medium tracking-widest uppercase text-neutral-600">
-          User records
+    <div className="bg-[#0f0f0d] border border-[#1e1e1c] rounded-[10px] p-4">
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-[12px] font-medium tracking-[0.08em] uppercase text-[#5f5e5a]">
+          {title}
         </span>
-        <span className="text-[11px] font-medium px-3 py-1 rounded-full bg-neutral-900 border border-neutral-700 text-neutral-500 font-mono">
-          {users.length} records
-        </span>
+        <a href={url}>
+          <span className="text-[14px] text-[#378ADD] cursor-pointer capitalize">
+            {buttonLabel}
+          </span>
+        </a>
       </div>
-
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse table-fixed">
-          <thead>
-            <tr className="border-b border-neutral-800">
-              {["Name", "Email", "Address"].map((col) => (
-                <th
-                  key={col}
-                  className="text-[11px] font-medium tracking-widest uppercase text-neutral-700 pb-3 text-left px-3 first:pl-0"
-                >
-                  {col}
-                </th>
-              ))}
+      <table className="w-full border-collapse table-fixed">
+        <thead>
+          <tr>
+            {["Name", "Email", "Status"].map((h) => (
+              <th
+                key={h}
+                className="text-[10px] font-medium tracking-widest uppercase text-[#444441] pb-2 text-left px-2 first:pl-0 border-b border-[#1e1e1c]"
+              >
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {loading ? (
+            <tr>
+              <td
+                colSpan={3}
+                className="text-[12px] text-[#444441] py-4 text-center"
+              >
+                Loading...
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
+          ) : (
+            users.map((user) => (
               <tr
                 key={user._id}
-                className="border-b border-neutral-900 hover:bg-neutral-900 transition-colors duration-150"
+                className="border-b border-[#151513] last:border-none hover:bg-[#151513] transition-colors"
               >
-                {/* name */}
-                <td className="py-3 px-3 first:pl-0">
-                  <div className="flex items-center gap-2.5">
-                    <Avatar name={user.name} />
-                    <span className="text-sm font-medium text-neutral-100">
+                <td className="py-2.5 px-2 first:pl-0">
+                  <div className="flex items-center gap-2">
+                    <Avatar name={user.name} size="sm" />
+                    <span className="text-[12px] text-[#d3d1c7]">
                       {user.name}
                     </span>
                   </div>
                 </td>
-
-                {/* email */}
-                <td className="py-3 px-3 text-[13px] text-neutral-500">
+                <td className="py-2.5 px-2 text-[12px] text-[#888780]">
                   {user.email}
                 </td>
-
-                {/* address */}
-                <td className="py-3 px-3 text-[13px] text-neutral-500">
-                  <StatusDot />
-                  {user.address}
+                <td className="py-2.5 px-2">
+                  <Pill label="active" variant="green" />
                 </td>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            ))
+          )}
+        </tbody>
+      </table>
     </div>
   );
 };
 
-export default UserTable;
+interface ProductTableProps {
+  products: Product[];
+  loading: boolean;
+  title?: string;
+}
+
+export const ProductTable = ({
+  products,
+  loading,
+  title = "Latest products",
+}: ProductTableProps) => {
+  return (
+    <div className="bg-[#0f0f0d] border border-[#1e1e1c] rounded-[10px] p-4">
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-[12px] font-medium tracking-[0.08em] uppercase text-[#5f5e5a]">
+          {title}
+        </span>
+        <a href="dashboard/products">
+          <span className="text-[11px] text-[#378ADD] cursor-pointer capitalize">
+            view all →
+          </span>
+        </a>
+      </div>
+      <table className="w-full border-collapse table-fixed">
+        <thead>
+          <tr>
+            {["Product", "Category", "Supplier", "Stock"].map((h) => (
+              <th
+                key={h}
+                className="text-[10px] font-medium tracking-widest uppercase text-[#444441] pb-2 text-left px-2 first:pl-0 border-b border-[#1e1e1c]"
+              >
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {loading ? (
+            <tr>
+              <td
+                colSpan={3}
+                className="text-[12px] text-[#444441] py-4 text-center"
+              >
+                Loading...
+              </td>
+            </tr>
+          ) : (
+            products.map((p) => (
+              <tr
+                key={p._id}
+                className="border-b border-[#151513] last:border-none hover:bg-[#151513] transition-colors"
+              >
+                <td className="py-2.5 px-2 first:pl-0 text-[12px] text-[#d3d1c7] font-medium">
+                  {p.name}
+                </td>
+                <td className="py-2.5 px-2">
+                  <Pill label={p.category} variant="blue" />
+                </td>
+                <td className="py-2.5 px-2 text-[12px] text-[#888780]">
+                  {p.supplier}
+                </td>
+                <td className="py-2.5 px-2">
+                  <Pill
+                    label={String(p.stock)}
+                    variant={p.stock > 10 ? "green" : "amber"}
+                  />
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+};
