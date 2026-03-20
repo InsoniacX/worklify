@@ -131,7 +131,7 @@ const Dashboard = () => {
             </span>
             <a href="/users">
               <span className="text-[11px] text-blue-400 cursor-pointer">
-                view all →
+                View All →
               </span>
             </a>
           </div>
@@ -161,6 +161,7 @@ const Dashboard = () => {
           loading={loading}
           buttonLabel="View Users"
           url="dashboard/users"
+          actions={false}
         />
         <ProductTable products={products} loading={loadingProducts} />
       </div>

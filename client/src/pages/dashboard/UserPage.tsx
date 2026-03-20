@@ -10,9 +10,9 @@ const UserPage = () => {
       <UserTable
         users={usersList}
         loading={loading}
-        title="Users"
         buttonLabel="Create New User"
         url="users/new"
+        actions={true}
       />
     </DashboardLayout>
   );

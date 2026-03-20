@@ -24,12 +24,12 @@ const navLinks = [
         icon: <MdDashboard size={14} />,
       },
       {
-        url: "dashboard/users",
+        url: "/dashboard/users",
         label: "Users",
         icon: <MdPeople size={14} />,
       },
       {
-        url: "dashboard/products",
+        url: "/dashboard/products",
         label: "Products",
         icon: <MdInventory size={14} />,
       },
@@ -39,12 +39,12 @@ const navLinks = [
     section: "Analytics",
     items: [
       {
-        url: "dashboard/reports",
+        url: "/dashboard/reports",
         label: "Reports",
         icon: <MdBarChart size={14} />,
       },
       {
-        url: "dashboard/activity",
+        url: "/dashboard/activity",
         label: "Activity",
         icon: <MdAccessTime size={14} />,
       },

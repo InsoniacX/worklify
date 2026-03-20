@@ -8,10 +8,8 @@ import User from "../model/userModel.js";
  */
 export const fetchAll = async(req, res) => {
     try {
-        console.log("Narik Datanya dulu ya kontol...")
         const data = await User.find({})
         
-        console.log("Noh datanya udah di ambil baca dah ama lu sendiri")
         res.status(200).json(data);
     } catch(error) {
         res.status(500).json({error: error.message})
