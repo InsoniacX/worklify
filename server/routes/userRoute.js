@@ -9,8 +9,6 @@ router.get('/recent', fetchRecent);
 
 router.post('/', createUser);
 
-// router.get('/new');
-
 router.route('/:id')
     .get(fetchById)
     .patch(updateUser)

@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Dashboard, UserPage, UserForms } from "@/pages";
+import { Dashboard, UserPage, UserInput, UserEdit } from "@/pages";
 
 const App = () => {
   return (
@@ -7,7 +7,8 @@ const App = () => {
       <Routes>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/users" element={<UserPage />} />
-        <Route path="/dashboard/users/new" element={<UserForms />} />
+        <Route path="/dashboard/users/new" element={<UserInput />} />
+        <Route path="/users/:id/edit" element={<UserEdit />} />
       </Routes>
     </BrowserRouter>
   );

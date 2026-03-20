@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { DashboardLayout } from "@/components/layout";
 import { Forms } from "@/components/ui";
 
-const UserForms = () => {
+const UserInput = () => {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -70,4 +70,4 @@ const UserForms = () => {
   );
 };
 
-export default UserForms;
+export default UserInput;

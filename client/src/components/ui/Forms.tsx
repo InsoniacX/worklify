@@ -15,6 +15,7 @@ interface FormsProps {
   buttonLabel: string;
   loading: boolean;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  defaultValue?: Record<string, string>;
 }
 
 const Forms = ({
@@ -23,6 +24,7 @@ const Forms = ({
   buttonLabel,
   loading,
   onSubmit,
+  defaultValue,
 }: FormsProps) => {
   return (
     <form
@@ -47,6 +49,7 @@ const Forms = ({
                 id={field.name}
                 name={field.name}
                 placeholder={field.placeholder}
+                defaultValue={defaultValue?.[field.name] ?? ""}
                 rows={3}
                 className="bg-[#0a0a09] border border-[#1e1e1c] rounded-lg px-3 py-2 text-[13px] text-neutral-300 placeholder:text-neutral-700 focus:outline-none focus:border-blue-800 transition-colors resize-none"
               />
@@ -56,6 +59,7 @@ const Forms = ({
                 id={field.name}
                 name={field.name}
                 placeholder={field.placeholder}
+                defaultValue={defaultValue?.[field.name] ?? ""}
                 className="bg-[#0a0a09] border border-[#1e1e1c] rounded-lg px-3 py-2 text-[13px] text-neutral-300 placeholder:text-neutral-700 focus:outline-none focus:border-blue-800 transition-colors"
               />
             )}

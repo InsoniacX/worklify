@@ -9,7 +9,7 @@ const UserPage = () => {
   const navigate = useNavigate();
 
   const handleEdit = (id: string) => {
-    navigate("/users/${id}/edit");
+    navigate(`/users/${id}/edit`);
   };
 
   const handleDelete = async (id: string) => {
