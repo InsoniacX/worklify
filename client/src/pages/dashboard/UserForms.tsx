@@ -1,21 +1,44 @@
+import React, { useState } from "react";
 import { DashboardLayout } from "@/components/layout";
 import { Forms } from "@/components/ui";
 
 const UserForms = () => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+
+    const data = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      address: formData.get("address") as string,
+    };
+
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:8080/api/user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) throw new Error("Failed to create User");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <DashboardLayout title="Register New User">
       <Forms
         title="User Forms"
         buttonLabel="Submit"
         loading={false}
-        onSubmit={(e) => {
-          e.preventDefault();
-          const formData = new FormData(e.currentTarget);
-          // console.log(formData.get("name"));
-          // console.log(formData.get("email"));
-          // console.log(formData.get("password"));
-          // console.log(formData.get("address"));
-        }}
+        onSubmit={handleSubmit}
         fields={[
           {
             type: "text",
@@ -29,12 +52,12 @@ const UserForms = () => {
             label: "Email",
             placeholder: "you@example.com",
           },
-          {
+          /* {
             type: "password",
             name: "password",
             label: "Password",
             placeholder: "••••••••",
-          },
+          }, */
           {
             type: "textarea",
             name: "address",

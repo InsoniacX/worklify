@@ -8,6 +8,8 @@ interface UserTableProps {
   buttonLabel: string;
   url: string;
   actions: boolean;
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
 export const UserTable = ({
@@ -17,6 +19,8 @@ export const UserTable = ({
   buttonLabel,
   url,
   actions,
+  onEdit,
+  onDelete,
 }: UserTableProps) => {
   return (
     <div className="bg-[#0f0f0d] border border-[#1e1e1c] rounded-[10px] p-4">
@@ -82,13 +86,16 @@ export const UserTable = ({
                 {actions && (
                   <td className="py-2.5 px-2">
                     <div className="flex items-center gap-2">
-                      <a
-                        href={`users/${user._id}`}
+                      <button
+                        onClick={() => onEdit?.(user._id)}
                         className="text-[11px] px-2.5 py-1 rounded-md border border-blue-800 text-blue-400 hover:bg-blue-950 transition-colors"
                       >
                         Edit
-                      </a>
-                      <button className="text-[11px] px-2.5 py-1 rounded-md border border-red-900 text-red-400 hover:bg-red-950 transition-colors">
+                      </button>
+                      <button
+                        onClick={() => onDelete?.(user._id)}
+                        className="text-[11px] px-2.5 py-1 rounded-md border border-red-900 text-red-400 hover:bg-red-950 transition-colors"
+                      >
                         Delete
                       </button>
                     </div>

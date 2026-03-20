@@ -6,25 +6,22 @@ export const useUsers = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await fetch("http://localhost:8080/api/user");
-                if (!response.ok) return new Error("Failed to Fetch users");
+    const fetchUsers = async () => {
+        try {
+            const response = await fetch("http://localhost:8080/api/user");
+            if (!response.ok) return new Error("Failed to Fetch users");
+            const data: User[] = await response.json();
+            setUsers(data);
+        } catch(err) {                      
+            setError((err as Error).message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-                const data: User[] = await response.json();
-                setUsers(data);
-            } catch(err) {
-                setError((err as Error).message);
-            } finally {
-                setLoading(false);
-            }
-        };
+    useEffect(() => { fetchUsers(); }, [])
 
-        fetchUsers();
-    }, []);
-
-    return { users, loading, error };
+    return { users, loading, error, refetch: fetchUsers };
 }
 
 export const useRecentUsers = () => {
