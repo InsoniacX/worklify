@@ -1,7 +1,11 @@
 import { useEffect, useRef } from "react";
 import { useRecentUsers, useUserCount, useProduct } from "@/hooks";
-import { StatCard, UserTable, ProductTable } from "@/components/ui";
-import { DashboardLayout } from "@/components/layout";
+import {
+  StatCard,
+  UserTable,
+  ProductTable,
+  DashboardLayout,
+} from "@/components";
 import type { StatCardProps } from "@/types";
 
 const Dashboard = () => {

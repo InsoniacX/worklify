@@ -4,7 +4,9 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import userRouter from "./routes/userRoute.js";
 import productRouter from "./routes/productRoute.js";
+import authRouter from "./routes/authRoute.js";
 import cors from "cors";
+import { protect } from "./middleware/authMiddleware.js";
 
 dotenv.config();
 
@@ -17,10 +19,12 @@ app.use(cors({
 app.use(bodyParser.json());
 
 /**
- * API URL
+ * Public API
  */
-app.use("/api/user", userRouter);
-app.use("/api/product", productRouter);
+app.use("/api/auth", authRouter);
+
+app.use("/api/user", protect, userRouter);
+app.use("/api/product", protect, productRouter);
 
 const PORT = process.env.PORT || 8000;
 const MONGOURL = process.env.MONGO_URL;

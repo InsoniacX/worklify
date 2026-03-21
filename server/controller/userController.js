@@ -41,7 +41,6 @@ export const fetchRecent = async (req, res) => {
  */
 export const fetchById = async(req, res) => {
     try { 
-        console.log("AWAS LU NGENTOT...")
         const data = await User.findById(req.params.id)
 
         res.status(200).json(data)

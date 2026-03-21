@@ -1,4 +1,4 @@
-import { Avatar, Pill } from "@/components/ui";
+import { Avatar, Pill } from "@/components";
 import type { Product, User } from "@/types";
 
 interface UserTableProps {
@@ -114,29 +114,49 @@ interface ProductTableProps {
   products: Product[];
   loading: boolean;
   title?: string;
+  buttonLabel?: string;
+  url?: string;
+  actions?: boolean;
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
 export const ProductTable = ({
   products,
   loading,
   title = "Latest products",
+  buttonLabel,
+  url,
+  actions = false,
+  onEdit,
+  onDelete,
 }: ProductTableProps) => {
   return (
     <div className="bg-[#0f0f0d] border border-[#1e1e1c] rounded-[10px] p-4">
       <div className="flex items-center justify-between mb-4">
-        <span className="text-[12px] font-medium tracking-[0.08em] uppercase text-[#5f5e5a]">
-          {title}
-        </span>
-        <a href="dashboard/products">
-          <span className="text-[11px] text-[#378ADD] cursor-pointer capitalize">
-            view all →
+        {title && (
+          <span className="text-[12px] font-medium tracking-[0.08em] uppercase text-[#5f5e5a]">
+            {title}
           </span>
-        </a>
+        )}
+        {url && buttonLabel && (
+          <a href={url}>
+            <span className="text-[14px] text-[#378ADD] cursor-pointer capitalize">
+              {buttonLabel}
+            </span>
+          </a>
+        )}
       </div>
       <table className="w-full border-collapse table-fixed">
         <thead>
           <tr>
-            {["Product", "Category", "Supplier", "Stock"].map((h) => (
+            {[
+              "Product",
+              "Category",
+              "Supplier",
+              "Stock",
+              ...(actions ? ["Actions"] : []),
+            ].map((h) => (
               <th
                 key={h}
                 className="text-[10px] font-medium tracking-widest uppercase text-[#444441] pb-2 text-left px-2 first:pl-0 border-b border-[#1e1e1c]"
@@ -150,7 +170,7 @@ export const ProductTable = ({
           {loading ? (
             <tr>
               <td
-                colSpan={3}
+                colSpan={actions ? 5 : 4}
                 className="text-[12px] text-[#444441] py-4 text-center"
               >
                 Loading...
@@ -177,6 +197,25 @@ export const ProductTable = ({
                     variant={p.stock > 10 ? "green" : "amber"}
                   />
                 </td>
+
+                {actions && (
+                  <td className="py-2.5 px-2">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => onEdit?.(p._id)}
+                        className="text-[11px] px-2.5 py-1 rounded-md border border-blue-800 text-blue-400 hover:bg-blue-950 transition-colors"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => onDelete?.(p._id)}
+                        className="text-[11px] px-2.5 py-1 rounded-md border border-red-900 text-red-400 hover:bg-red-950 transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                )}
               </tr>
             ))
           )}

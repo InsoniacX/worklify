@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { DashboardLayout } from "@/components/layout";
-import { Forms } from "@/components/ui";
+import { DashboardLayout } from "@/components";
+import { Forms } from "@/components";
 import { useNavigate } from "react-router-dom";
+import { authFetch } from "@/utils/AuthFetch";
 
 const UserInput = () => {
   const [loading, setLoading] = useState(false);
@@ -21,7 +22,7 @@ const UserInput = () => {
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:8080/api/user", {
+      const response = await authFetch("http://localhost:8080/api/user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

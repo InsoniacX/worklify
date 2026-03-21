@@ -1,4 +1,4 @@
-import { Avatar } from "../ui";
+import { Avatar } from "..";
 import NavItem from "../ui/NavItem";
 import type { ReactNode } from "react";
 import {

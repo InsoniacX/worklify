@@ -1,6 +1,7 @@
-import { DashboardLayout } from "@/components/layout";
-import { UserTable } from "@/components/ui";
+import { DashboardLayout } from "@/components";
+import { UserTable } from "@/components";
 import { useUsers } from "@/hooks";
+import { authFetch } from "@/utils/AuthFetch";
 import { useNavigate } from "react-router-dom";
 
 const UserPage = () => {
@@ -8,14 +9,14 @@ const UserPage = () => {
   const navigate = useNavigate();
 
   const handleEdit = (id: string) => {
-    navigate(`/users/${id}/edit`);
+    navigate(`/dashboard/users/${id}/edit`);
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure want to delete this user?")) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/api/user/${id}`, {
+      const response = await authFetch(`http://localhost:8080/api/user/${id}`, {
         method: "DELETE",
       });
       if (!response.ok) throw new Error("Failed to delete this user");
@@ -30,6 +31,7 @@ const UserPage = () => {
       <UserTable
         users={usersList}
         loading={loading}
+        title="All users"
         buttonLabel="Create New User"
         url="users/new"
         actions={true}

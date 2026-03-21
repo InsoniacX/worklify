@@ -1,5 +1,6 @@
-import { DashboardLayout } from "@/components/layout";
-import { Forms } from "@/components/ui";
+import { DashboardLayout } from "@/components";
+import { Forms } from "@/components";
+import { authFetch } from "@/utils/AuthFetch";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -14,12 +15,14 @@ const UserEdit = () => {
     email: "",
     address: "",
   });
-  const [success, setSuccess] = useState<boolean>(true);
+  // const [success, setSuccess] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/user/${id}`);
+        const response = await authFetch(
+          `http://localhost:8080/api/user/${id}`
+        );
         if (!response.ok) throw new Error("User Not Found");
         const data = await response.json();
         setDefaultValue({
@@ -50,7 +53,7 @@ const UserEdit = () => {
 
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8080/api/user/${id}`, {
+      const response = await authFetch(`http://localhost:8080/api/user/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
