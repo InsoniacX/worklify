@@ -1,39 +1,13 @@
 import { useEffect, useRef } from "react";
-import { useRecentUsers, useProduct } from "@/hooks";
+import { useRecentUsers, useUserCount, useProduct } from "@/hooks";
 import { StatCard, UserTable, ProductTable } from "@/components/ui";
 import { DashboardLayout } from "@/components/layout";
 import type { StatCardProps } from "@/types";
 
-const stats: StatCardProps[] = [
-  {
-    label: "Total users",
-    value: "1,284",
-    delta: "12% this month",
-    deltaUp: true,
-  },
-  {
-    label: "Products",
-    value: "342",
-    delta: "4% this month",
-    deltaUp: true,
-  },
-  {
-    label: "Revenue",
-    value: "$8,420",
-    delta: "8% this month",
-    deltaUp: true,
-  },
-  {
-    label: "Churn rate",
-    value: "2.4%",
-    delta: "0.3% this month",
-    deltaUp: false,
-  },
-];
-
 const Dashboard = () => {
   const { users: latestUsers, loading } = useRecentUsers();
   const { products, loading: loadingProducts } = useProduct();
+  const { count: userCount, delta, deltaUp } = useUserCount();
   const lineRef = useRef<HTMLCanvasElement>(null);
   const barRef = useRef<HTMLCanvasElement>(null);
 
@@ -112,6 +86,33 @@ const Dashboard = () => {
       barChart?.destroy();
     };
   }, []);
+
+  const stats: StatCardProps[] = [
+    {
+      label: "Total users",
+      value: String(userCount),
+      delta: `${Math.abs(delta)}% this month`,
+      deltaUp: deltaUp,
+    },
+    {
+      label: "Products",
+      value: "342",
+      delta: "4% this month",
+      deltaUp: true,
+    },
+    {
+      label: "Revenue",
+      value: "$8,420",
+      delta: "8% this month",
+      deltaUp: true,
+    },
+    {
+      label: "Churn rate",
+      value: "2.4%",
+      delta: "0.3% this month",
+      deltaUp: false,
+    },
+  ];
 
   return (
     <DashboardLayout title="Dashboard">

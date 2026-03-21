@@ -1,4 +1,5 @@
 import { request } from "express";
+import bcrypt from "bcryptjs";
 import User from "../model/userModel.js";
 
 /**
@@ -52,17 +53,26 @@ export const fetchById = async(req, res) => {
 /**
  * Create user Data
  * METHOD: POST
- * URI: http://localhost:8080/user
+ * URI: http://localhost:8080/api/user
  */
 export const createUser = async(req, res) => {
     try {
-        const newUser = new User(req.body);
-        const { email } = newUser;
-
-        const userExist = await User.findOne({email})
+        const { name, email, password, address } = req.body;
+        
+        const userExist = await User.findOne({ email });
         if (userExist) {
-            return res.status(400).json({message: "User already exist"})
-        } 
+            return res.status(400).json({message: "User already exist"});
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
+        const newUser = new User({
+            name,
+            email,
+            password: hashedPassword,
+            address,
+        });
+
         const savedData = await newUser.save();
         res.status(200).json(savedData)
     } catch(error) {
@@ -73,21 +83,30 @@ export const createUser = async(req, res) => {
 /**
  * Update user Data
  * METHOD: PATCH
- * URI: http://localhost:8080/user/:id
+ * URI: http://localhost:8080/api/user/:id
  */
 export const updateUser = async(req, res) => {
     try{
         const user = await User.findById(req.params.id);
-        console.log(user)
-        if (!user) {
-            res.status(404).json({message: "User not Found"});
+        if(!user) {
+            res.status(404).json({message: "User didn't exist"});
         }
-        console.log(`User Found with id: ${user._id}`)
-        const updatedUser = await User.findByIdAndUpdate(user, req.body, {
-            new: true
-        })
-        
-        res.status(200).json(updatedUser)
+
+        const { password, ...rest } = req.body;
+
+        const updatedData = { ...rest }
+
+        if (password) {
+            updatedData.password = await bcrypt.hash(password, 10);
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            req.params.id,
+            updatedData,
+            { new: true }
+        );
+
+        res.status(200).json({updatedUser});
     } catch(error) {
         res.status(500).json({error: error.message});
     }
@@ -96,7 +115,7 @@ export const updateUser = async(req, res) => {
 /**
  * Show the Create User Page
  * METHOD: GET
- * URI: http://localhost:8080/user/new
+ * URI: http://localhost:8080/api/user/new
  */
 export const createPage = async(req, res) => {
     try {
@@ -109,7 +128,7 @@ export const createPage = async(req, res) => {
 /**
  * DELETE user data
  * METHOD: DELETE
- * URI: http://localhost:8080/user/:id
+ * URI: http://localhost:8080/api/user/:id
  */
 export const removeUser = async(req, res) => {
     try {
@@ -125,4 +144,41 @@ export const removeUser = async(req, res) => {
     } catch(error) {
         res.status(500).json({error: error.message})
     }
+}
+
+/**
+ * GET User Count
+ * METHOD: GET
+ * URI: http://locahost:8080/api/user/count
+ */
+export const countUser = async(req, res) => {
+try {
+    const now = new Date();
+    const startOfMonth     = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+
+    const objectIdFromDate = (date) => {
+      return Math.floor(date.getTime() / 1000).toString(16).padStart(8, '0') + '0000000000000000';
+    };
+
+    const totalCount = await User.countDocuments();
+    const thisMonthCount = await User.countDocuments({
+      _id: { $gte: objectIdFromDate(startOfMonth) }
+    });
+    const lastMonthCount = await User.countDocuments({
+      _id: {
+        $gte: objectIdFromDate(startOfLastMonth),
+        $lt:  objectIdFromDate(startOfMonth),
+      }
+    });
+
+    const delta = lastMonthCount === 0
+      ? 100
+      : Math.round(((thisMonthCount - lastMonthCount) / lastMonthCount) * 100);
+
+    res.status(200).json({ count: totalCount, delta, deltaUp: delta >= 0 });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 }

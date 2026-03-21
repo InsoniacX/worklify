@@ -48,3 +48,31 @@ export const useRecentUsers = () => {
 
     return { users, loading, error};
 }
+
+export const useUserCount = () => {
+    const [count, setCount] = useState<number>(0);
+    const [delta, setDelta] = useState<number>(0);
+    const [deltaUp, setDeltaUp] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        const fetchCount = async () => {
+            try {
+                const response = await fetch("http://localhost:8080/api/user/count");
+                if (!response.ok) throw new Error("Failed to get User Count");
+                const data = await response.json();
+                setCount(data.count);
+                setDelta(data.delta);
+                setDeltaUp(data.deltaUp);
+            } catch(error) {
+                console.error(error)
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCount();
+    }, [])
+
+    return { count, loading, delta, deltaUp };
+}

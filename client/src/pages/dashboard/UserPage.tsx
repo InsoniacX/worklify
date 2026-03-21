@@ -1,7 +1,6 @@
 import { DashboardLayout } from "@/components/layout";
 import { UserTable } from "@/components/ui";
 import { useUsers } from "@/hooks";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const UserPage = () => {

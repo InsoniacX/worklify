@@ -1,9 +1,10 @@
 import express from 'express';
-import { fetchAll, fetchById, fetchRecent, createUser, updateUser, removeUser } from '../controller/userController.js';
+import { fetchAll, fetchById, fetchRecent, createUser, updateUser, removeUser, countUser } from '../controller/userController.js';
 
 const router = express.Router();
 
 router.get('/', fetchAll);
+router.get('/count', countUser);
 
 router.get('/recent', fetchRecent);
 

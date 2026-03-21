@@ -1,2 +1,2 @@
-export { useUsers, useRecentUsers } from "./useUser";
+export { useUsers, useRecentUsers, useUserCount } from "./useUser";
 export { useProduct } from "./useProduct";

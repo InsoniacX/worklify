@@ -14,6 +14,7 @@ const UserEdit = () => {
     email: "",
     address: "",
   });
+  const [success, setSuccess] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -44,6 +45,7 @@ const UserEdit = () => {
       name: formData.get("name") as string,
       email: formData.get("email") as string,
       address: formData.get("address") as string,
+      password: formData.get("password") as string,
     };
 
     try {
@@ -74,33 +76,41 @@ const UserEdit = () => {
 
   return (
     <DashboardLayout title="Edit Page">
-      <Forms
-        title="User Edit"
-        buttonLabel="Submit"
-        loading={loading}
-        onSubmit={handleSubmit}
-        defaultValue={defaultValue}
-        fields={[
-          {
-            type: "text",
-            name: "name",
-            label: "Name",
-            placeholder: "Enter name",
-          },
-          {
-            type: "email",
-            name: "email",
-            label: "Email",
-            placeholder: "Enter email",
-          },
-          {
-            type: "text",
-            name: "address",
-            label: "Address",
-            placeholder: "Enter address",
-          },
-        ]}
-      />
+      <div className="flex items-center justify-center">
+        <Forms
+          title="User Edit"
+          buttonLabel="Submit"
+          loading={loading}
+          onSubmit={handleSubmit}
+          defaultValue={defaultValue}
+          fields={[
+            {
+              type: "text",
+              name: "name",
+              label: "Name",
+              placeholder: "Enter name",
+            },
+            {
+              type: "email",
+              name: "email",
+              label: "Email",
+              placeholder: "Enter email",
+            },
+            {
+              type: "password",
+              name: "password",
+              label: "Password",
+              placeholder: "Enter Password",
+            },
+            {
+              type: "text",
+              name: "address",
+              label: "Address",
+              placeholder: "Enter address",
+            },
+          ]}
+        />
+      </div>
     </DashboardLayout>
   );
 };
