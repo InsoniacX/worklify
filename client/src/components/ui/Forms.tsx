@@ -1,6 +1,6 @@
 import React from "react";
 
-type FieldType = "text" | "email" | "password" | "textarea";
+type FieldType = "text" | "email" | "password" | "textarea" | "number";
 
 interface Field {
   type: FieldType;

@@ -6,6 +6,7 @@ import {
   UserEdit,
   LoginPage,
   ProductPage,
+  ProductCreate,
 } from "@/pages";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -51,6 +52,16 @@ const App = () => {
           element={
             <ProtectedRoute>
               <ProductPage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+      <Routes>
+        <Route
+          path="/dashboard/products/new"
+          element={
+            <ProtectedRoute>
+              <ProductCreate />
             </ProtectedRoute>
           }
         />

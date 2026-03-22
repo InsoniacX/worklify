@@ -50,7 +50,7 @@ export const createProduct = async(req, res) => {
         const savedData = await newProduct.save();
         res.status(200).json(savedData);
     } catch(error) {
-        res.status(error.status).json({error: error.message})
+        res.status(500).json({error: error.message})
     }
 }
 

@@ -1,12 +1,16 @@
+import { useNavigate } from "react-router-dom";
 import { Avatar } from "..";
 import NavItem from "../ui/NavItem";
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   MdAccessTime,
   MdBarChart,
   MdDashboard,
   MdInventory,
+  MdLogout,
   MdPeople,
+  MdPerson,
+  MdSettings,
 } from "react-icons/md";
 
 export interface DashboardLayoutProps {
@@ -53,6 +57,26 @@ const navLinks = [
 ];
 
 const DashboardLayout = ({ children, title }: DashboardLayoutProps) => {
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleClicksOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClicksOutside);
+    return () => document.addEventListener("mousedown", handleClicksOutside);
+  });
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
+
   return (
     <div className="flex min-h-screen bg-[#0a0a09] text-neutral-300 font-sans">
       {/* Sidebar */}
@@ -80,11 +104,61 @@ const DashboardLayout = ({ children, title }: DashboardLayoutProps) => {
         ))}
 
         {/* Footer */}
-        <div className="mt-auto border-t border-neutral-900 px-5 py-4">
-          <div className="flex items-center gap-2">
+        <div
+          className="mt-auto border-t border-neutral-900 px-3 py-3"
+          ref={menuRef}
+        >
+          {/* Dropdown menu */}
+          {menuOpen && (
+            <div className="mb-2 bg-[#0a0a09] border border-neutral-800 rounded-lg overflow-hidden">
+              <button
+                onClick={() => {
+                  navigate("/dashboard/profile");
+                  setMenuOpen(false);
+                }}
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-[12px] text-neutral-400 hover:bg-neutral-900 hover:text-neutral-100 transition-colors"
+              >
+                <MdPerson size={14} />
+                Profile
+              </button>
+              <button
+                onClick={() => {
+                  navigate("/dashboard/settings");
+                  setMenuOpen(false);
+                }}
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-[12px] text-neutral-400 hover:bg-neutral-900 hover:text-neutral-100 transition-colors"
+              >
+                <MdSettings size={14} />
+                Settings
+              </button>
+              <div className="border-t border-neutral-800" />
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-[12px] text-red-500 hover:bg-red-950 hover:text-red-400 transition-colors"
+              >
+                <MdLogout size={14} />
+                Logout
+              </button>
+            </div>
+          )}
+
+          {/* User button */}
+          <button
+            onClick={() => setMenuOpen((prev) => !prev)}
+            className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-neutral-900 transition-colors"
+          >
             <Avatar name="Arsyad" />
-            <span className="text-[12px] text-neutral-500">Arsyad</span>
-          </div>
+            <span className="text-[12px] text-neutral-500 flex-1 text-left">
+              Arsyad
+            </span>
+            <span
+              className={`text-neutral-700 text-[10px] transition-transform duration-150 ${
+                menuOpen ? "rotate-180" : ""
+              }`}
+            >
+              ▲
+            </span>
+          </button>
         </div>
       </aside>
 

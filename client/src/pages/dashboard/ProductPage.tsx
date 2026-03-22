@@ -31,7 +31,7 @@ const ProductPage = () => {
         loading={loading}
         title="All products"
         buttonLabel="Create New Product"
-        url="/products/new"
+        url="/dashboard/products/new"
         actions={true}
         onEdit={(id) => navigate(`/products/${id}/edit`)}
         onDelete={(id) => handleDelete(id)}
