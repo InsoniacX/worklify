@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { authFetch } from "@/utils/AuthFetch";
 
 const UserInput = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -21,6 +22,7 @@ const UserInput = () => {
     };
 
     try {
+      setError(null);
       setLoading(true);
       const response = await authFetch("http://localhost:8080/api/user", {
         method: "POST",
@@ -28,10 +30,14 @@ const UserInput = () => {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) throw new Error("Failed to create User");
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message);
+      }
+
       navigate("/dashboard/users");
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      setError((err as Error).message);
     } finally {
       setLoading(false);
     }
@@ -45,6 +51,7 @@ const UserInput = () => {
           buttonLabel="Submit"
           loading={loading}
           onSubmit={handleSubmit}
+          error={error}
           fields={[
             {
               type: "text",

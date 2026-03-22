@@ -33,7 +33,7 @@ const ProductPage = () => {
         buttonLabel="Create New Product"
         url="/dashboard/products/new"
         actions={true}
-        onEdit={(id) => navigate(`/products/${id}/edit`)}
+        onEdit={(id) => navigate(`/dashboard/products/${id}/edit`)}
         onDelete={(id) => handleDelete(id)}
       />
     </DashboardLayout>

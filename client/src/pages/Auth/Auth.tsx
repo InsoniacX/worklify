@@ -38,8 +38,8 @@ export const LoginPage = () => {
       localStorage.setItem("user", JSON.stringify(user));
 
       navigate("/dashboard");
-    } catch (error) {
-      setError((error as Error).message);
+    } catch (err) {
+      setError((err as Error).message);
     } finally {
       setLoading(false);
     }
@@ -47,14 +47,12 @@ export const LoginPage = () => {
 
   return (
     <div className="h-screen bg-black flex justify-center items-center">
-      {error ?? (
-        <p className="mt-3 text-[12px] text-red-400 text-center">{error}</p>
-      )}
       <Forms
         title="Login Page"
         buttonLabel="Login"
         loading={loading}
         onSubmit={handleLogin}
+        error={error}
         fields={[
           {
             type: "email",

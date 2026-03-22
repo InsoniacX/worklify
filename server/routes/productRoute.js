@@ -4,7 +4,8 @@ import {
     latestProduct,
     createProduct, 
     fetchById, 
-    removeProduct 
+    removeProduct, 
+    updateProduct
 } from "../controller/productController.js";
 
 const router = express.Router();
@@ -17,6 +18,7 @@ router.post('/', createProduct)
 
 router.route('/:id')
 .get(fetchById)
+.patch(updateProduct)
 .delete(removeProduct)
 
 export default router;

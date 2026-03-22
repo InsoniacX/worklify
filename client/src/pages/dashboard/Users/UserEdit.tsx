@@ -1,11 +1,11 @@
-import { DashboardLayout } from "@/components";
-import { Forms } from "@/components";
+import { DashboardLayout, Forms } from "@/components";
 import { authFetch } from "@/utils/AuthFetch";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const UserEdit = () => {
   const { id } = useParams<{ id: string }>();
+  const [error, setError] = useState<string | null>();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -30,8 +30,8 @@ const UserEdit = () => {
           email: data.email,
           address: data.address,
         });
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        setError((err as Error).message);
       } finally {
         setFetching(false);
       }
@@ -59,11 +59,14 @@ const UserEdit = () => {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) throw new Error("Failed to Update User");
+      if (!response.ok) {
+        const result = await response.json();
+        throw new Error(result.message);
+      }
       console.log("Data has been Updated");
       navigate("/dashboard/users");
     } catch (error) {
-      console.error(error);
+      setError((error as Error).message);
     } finally {
       setLoading(false);
     }
@@ -86,6 +89,7 @@ const UserEdit = () => {
           loading={loading}
           onSubmit={handleSubmit}
           defaultValue={defaultValue}
+          error={error}
           fields={[
             {
               type: "text",

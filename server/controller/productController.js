@@ -40,14 +40,23 @@ export const latestProduct = async(req, res) => {
  */
 export const createProduct = async(req, res) => {
     try {
-        const newProduct = new Product(req.body);
-        const { name, sender } = newProduct
+    const { name, brand, category, stock, supplier } = req.body;
 
-        const productExist = await Product.findOne({name, sender})
-        if (productExist) {
-            return res.status(400).json({message: "Product has been sent please wait until our next report"})
-        }
-        const savedData = await newProduct.save();
+    if (!name || !brand || !category || !stock || !supplier) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (isNaN(stock) || stock < 0) {
+      return res.status(400).json({ message: "Stock must be a valid positive number" });
+    }
+
+    const productExist = await Product.findOne({ name, supplier });
+    if (productExist) {
+      return res.status(400).json({ message: "Product already exists from this supplier" });
+    }
+
+    const newProduct = new Product({ name, brand, category, stock, supplier });
+    const savedData = await newProduct.save();
         res.status(200).json(savedData);
     } catch(error) {
         res.status(500).json({error: error.message})
@@ -56,7 +65,7 @@ export const createProduct = async(req, res) => {
 
 /**
  * Update Product Data
- * METHOD = GET
+ * METHOD = PATCH
  * URI = http://localhost:8080/api/product/:id 
  */
 export const updateProduct = async(req, res) => {

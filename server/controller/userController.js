@@ -57,6 +57,14 @@ export const fetchById = async(req, res) => {
 export const createUser = async(req, res) => {
     try {
         const { name, email, password, address } = req.body;
+
+        if (!name || !email || !password || !address) {
+          return res.status(400).json({ message: "All fields are required" });
+        }
+
+        if (password.length < 8) {
+          return res.status(400).json({ message: "Password must be at least 8 characters" });
+        }
         
         const userExist = await User.findOne({ email });
         if (userExist) {

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 const CreateProduct = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -24,6 +25,7 @@ const CreateProduct = () => {
       return console.error("The Value of Stock need to be Number");
 
     try {
+      setError(null);
       setLoading(true);
       const response = await authFetch("http://localhost:8080/api/product", {
         method: "POST",
@@ -31,10 +33,14 @@ const CreateProduct = () => {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) throw new Error("Failed to create Product");
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message);
+      }
+
       navigate("/dashboard/products");
     } catch (err) {
-      console.error(err);
+      setError((err as Error).message);
     } finally {
       setLoading(false);
     }
@@ -48,6 +54,7 @@ const CreateProduct = () => {
           buttonLabel="Submit"
           loading={loading}
           onSubmit={handleSubmit}
+          error={error}
           fields={[
             {
               type: "text",

@@ -15,7 +15,8 @@ interface FormsProps {
   buttonLabel: string;
   loading: boolean;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  defaultValue?: Record<string, string>;
+  defaultValue?: Record<string, string | number>;
+  error?: string | null;
 }
 
 const Forms = ({
@@ -25,6 +26,7 @@ const Forms = ({
   loading,
   onSubmit,
   defaultValue,
+  error,
 }: FormsProps) => {
   return (
     <form
@@ -34,6 +36,13 @@ const Forms = ({
       {/* Title */}
       <p className="text-[15px] font-medium text-neutral-100 mb-6">{title}</p>
 
+      {/* Error Message */}
+      {error && (
+        <div className="mb-4 px-3 py-2.5 rounded-lg bg-red-950 border border-red-900 flex items-center gap-2">
+          <span className="text-red-400 text-[11px]">⚠</span>
+          <p className="text-[12px] text-red-400">{error}</p>
+        </div>
+      )}
       {/* Fields */}
       <div className="flex flex-col gap-4">
         {fields.map((field) => (

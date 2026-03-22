@@ -7,6 +7,7 @@ import {
   LoginPage,
   ProductPage,
   ProductCreate,
+  ProductEdit,
 } from "@/pages";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -62,6 +63,16 @@ const App = () => {
           element={
             <ProtectedRoute>
               <ProductCreate />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+      <Routes>
+        <Route
+          path="/dashboard/products/:id/edit"
+          element={
+            <ProtectedRoute>
+              <ProductEdit />
             </ProtectedRoute>
           }
         />
