@@ -1,12 +1,13 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import userRouter from "./routes/userRoute.js";
 import productRouter from "./routes/productRoute.js";
 import authRouter from "./routes/authRoute.js";
+import { fileURLToPath } from "url";
 import cors from "cors";
 import { protect } from "./middleware/authMiddleware.js";
+import path from "path";
 
 dotenv.config();
 
@@ -16,15 +17,20 @@ app.use(cors({
     origin: process.env.CORS_ORIGIN
 }))
 
-app.use(bodyParser.json());
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.json());
 
 /**
  * Public API
- */
+*/
 app.use("/api/auth", authRouter);
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/user", protect, userRouter);
 app.use("/api/product", protect, productRouter);
+
 
 const PORT = process.env.PORT || 8000;
 const MONGOURL = process.env.MONGO_URL;

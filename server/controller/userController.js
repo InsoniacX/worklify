@@ -1,4 +1,3 @@
-import { request } from "express";
 import bcrypt from "bcryptjs";
 import User from "../model/userModel.js";
 
@@ -96,7 +95,7 @@ export const updateUser = async(req, res) => {
     try{
         const user = await User.findById(req.params.id);
         if(!user) {
-            res.status(404).json({message: "User didn't exist"});
+           return res.status(404).json({message: "User didn't exist"});
         }
 
         const { password, ...rest } = req.body;
@@ -113,7 +112,7 @@ export const updateUser = async(req, res) => {
             { new: true }
         );
 
-        res.status(200).json({updatedUser});
+        res.status(200).json(updatedUser);
     } catch(error) {
         res.status(500).json({error: error.message});
     }
@@ -189,3 +188,34 @@ try {
     res.status(500).json({ error: error.message });
   }
 }
+
+/**
+ * Profile Picture Upload Controller
+ * METHOD: POST
+ * URI: http://localhost:8080/api/uploads/:id/avatar
+ */
+
+export const uploadAvatar = async ( req, res ) => {
+    try {
+        if(!req.file) {
+            return res.status(400).json({ message: "No file uploaded "});
+        }
+
+        const pictureUrl = `http://localhost:8080/uploads/${req.file.filename}`;
+
+        const updateUser = await User.findByIdAndUpdate( 
+            req.params.id, 
+            { picture: pictureUrl }, 
+            { new: true } 
+        );
+
+        if (!updateUser) {
+            return res.status(404).json({ message: "User not found "});
+        }
+
+        const { password: _, ...userWithoutPassword } = updateUser.toObject();
+        res.status(200).json(userWithoutPassword);
+    } catch(err){
+        res.status(500).json({error: err.message});
+    } 
+};

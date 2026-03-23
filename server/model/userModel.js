@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     address:{
         type: String,
     },
-    image: {
+    picture: {
         type: String,
         default: "",
     },

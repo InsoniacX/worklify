@@ -16,6 +16,7 @@ export const useUsers = () => {
             const response = await authFetch("http://localhost:8080/api/user");
             if (!response.ok) return new Error("Failed to Fetch users");
             const data: User[] = await response.json();
+            console.log(data);
             setUsers(data);
         } catch(err) {                      
             setError((err as Error).message);

@@ -1,15 +1,16 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { DashboardLayout } from "@/components";
 import { authFetch } from "@/utils/AuthFetch";
-import { MdLock, MdPerson, MdCamera } from "react-icons/md";
+import { MdLock, MdPerson, MdCamera, MdEdit } from "react-icons/md";
 
 const Profile = () => {
   const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const fileRef = useRef<HTMLInputElement>(null);
 
+  const [uploading, setUploading] = useState(false);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
   const [profileSuccess, setProfileSuccess] = useState<string | null>(null);
-
   const [passLoading, setPassLoading] = useState(false);
   const [passError, setPassError] = useState<string | null>(null);
   const [passSuccess, setPassSuccess] = useState<string | null>(null);
@@ -20,6 +21,45 @@ const Profile = () => {
     address: storedUser.address || "",
     picture: storedUser.picture || "",
   });
+
+  const syncToLocalStorage = (updated: Record<string, any>) => {
+    const { password: _, ...userWithoutPassword } = updated;
+    const merged = { ...storedUser, ...userWithoutPassword };
+    localStorage.setItem("user", JSON.stringify(merged));
+  };
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+
+      const formData = new FormData();
+      formData.append("picture", file);
+
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:8080/api/user/${storedUser._id}/avatar`,
+        {
+          method: "PATCH",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to upload picture");
+
+      const updated = await response.json();
+      console.log("avatar response:", updated);
+      syncToLocalStorage(updated);
+      setForm((prev) => ({ ...prev, picture: updated.picture }));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   // ── Handle profile update ─────────────────────────────────────────────────
   const handleProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -33,7 +73,11 @@ const Profile = () => {
         `http://localhost:8080/api/user/${storedUser._id}`,
         {
           method: "PATCH",
-          body: JSON.stringify(form),
+          body: JSON.stringify({
+            name: form.name,
+            email: form.email,
+            address: form.address,
+          }),
         }
       );
 
@@ -43,11 +87,7 @@ const Profile = () => {
       }
 
       const updated = await response.json();
-
-      // Remove password from stored user just in case
-      const { password: _, ...userWithoutPassword } = updated;
-      localStorage.setItem("user", JSON.stringify(userWithoutPassword));
-
+      syncToLocalStorage(updated); // ← merged, won't destroy existing fields
       setProfileSuccess("Profile updated successfully");
     } catch (err) {
       setProfileError((err as Error).message);
@@ -67,7 +107,6 @@ const Profile = () => {
       setPassError("Passwords do not match");
       return;
     }
-
     if (newPassword.length < 6) {
       setPassError("Password must be at least 6 characters");
       return;
@@ -103,32 +142,53 @@ const Profile = () => {
   return (
     <DashboardLayout title="Profile">
       <div className="max-w-2xl mx-auto flex flex-col gap-4">
-        {/* ── Avatar & name card ── */}
+        {/* ── Avatar card ── */}
         <div className="bg-[#0f0f0d] border border-neutral-900 rounded-xl p-6">
           <p className="text-[11px] font-medium tracking-widest uppercase text-neutral-600 mb-4 flex items-center gap-2">
             <MdCamera size={13} /> Profile picture
           </p>
           <div className="flex items-center gap-4">
-            {form.picture ? (
-              <img
-                src={form.picture}
-                alt={form.name}
-                className="w-16 h-16 rounded-full object-cover border border-neutral-800"
-              />
-            ) : (
-              <div className="w-16 h-16 rounded-full bg-blue-950 border border-blue-800 text-blue-400 flex items-center justify-center text-[20px] font-medium shrink-0">
-                {form.name.slice(0, 2).toUpperCase() || "?"}
-              </div>
-            )}
+            <div className="relative shrink-0">
+              {form.picture ? (
+                <img
+                  src={form.picture}
+                  alt={form.name}
+                  className="w-16 h-16 rounded-full object-cover border border-neutral-800"
+                />
+              ) : (
+                <div className="w-16 h-16 rounded-full bg-blue-950 border border-blue-800 text-blue-400 flex items-center justify-center text-[20px] font-medium">
+                  {form.name.slice(0, 2).toUpperCase() || "?"}
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                disabled={uploading}
+                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-neutral-800 border border-neutral-700 flex items-center justify-center hover:bg-neutral-700 transition-colors disabled:opacity-50"
+              >
+                <MdEdit size={11} className="text-neutral-300" />
+              </button>
+            </div>
+
             <div>
               <p className="text-[15px] font-medium text-neutral-100">
                 {form.name}
               </p>
               <p className="text-[12px] text-neutral-600">{form.email}</p>
               <p className="text-[11px] text-neutral-700 mt-1">
-                Update your picture URL in the profile info section below
+                {uploading
+                  ? "Uploading..."
+                  : "Click the edit button to upload a new picture"}
               </p>
             </div>
+
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              className="hidden"
+              onChange={handleAvatarUpload}
+            />
           </div>
         </div>
 
@@ -156,12 +216,6 @@ const Profile = () => {
                 key: "address",
                 type: "text",
                 placeholder: "Enter your address",
-              },
-              {
-                label: "Picture URL",
-                key: "picture",
-                type: "text",
-                placeholder: "https://your-image-url",
               },
             ].map((field) => (
               <div key={field.key} className="flex flex-col gap-1.5">
