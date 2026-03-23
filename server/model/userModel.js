@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema({
     address:{
         type: String,
     },
+    image: {
+        type: String,
+        default: "",
+    },
 })
 
 export default mongoose.model("Users", userSchema);

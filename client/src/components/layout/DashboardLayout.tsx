@@ -57,6 +57,7 @@ const navLinks = [
 ];
 
 const DashboardLayout = ({ children, title }: DashboardLayoutProps) => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -78,9 +79,9 @@ const DashboardLayout = ({ children, title }: DashboardLayoutProps) => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#0a0a09] text-neutral-300 font-sans">
+    <div className="flex h-screen overflow-hidden bg-[#0a0a09] text-neutral-300 font-sans">
       {/* Sidebar */}
-      <aside className="w-50 shrink-0 bg-[#0f0f0d] border-r border-neutral-900 flex flex-col">
+      <aside className="w-50 shrink-0 bg-[#0f0f0d] border-r border-neutral-900 flex flex-col overflow-y-auto">
         {/* Logo */}
         <div className="px-5 pt-5 pb-6 text-[15px] font-medium text-neutral-100">
           <span className="text-blue-400">●</span> GCI Dashboard
@@ -147,9 +148,9 @@ const DashboardLayout = ({ children, title }: DashboardLayoutProps) => {
             onClick={() => setMenuOpen((prev) => !prev)}
             className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-neutral-900 transition-colors"
           >
-            <Avatar name="Arsyad" />
+            <Avatar name={user.name} picture={user.picture} />
             <span className="text-[12px] text-neutral-500 flex-1 text-left">
-              Arsyad
+              {user.name}
             </span>
             <span
               className={`text-neutral-700 text-[10px] transition-transform duration-150 ${
@@ -163,7 +164,7 @@ const DashboardLayout = ({ children, title }: DashboardLayoutProps) => {
       </aside>
 
       {/*  Main  */}
-      <main className="flex-1 p-6 overflow-auto">
+      <main className="flex-1 p-6 overflow-y-auto">
         {/* Topbar */}
         <div className="flex items-center justify-between mb-6">
           <div>

@@ -69,7 +69,7 @@ export const UserTable = ({
               >
                 <td className="py-2.5 px-2 first:pl-0">
                   <div className="flex items-center gap-2">
-                    <Avatar name={user.name} />
+                    <Avatar name={user.name} picture={user.picture} size="sm" />
                     <span className="text-[12px] text-[#d3d1c7]">
                       {user.name}
                     </span>
