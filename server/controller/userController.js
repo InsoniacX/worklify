@@ -8,9 +8,24 @@ import User from "../model/userModel.js";
  */
 export const fetchAll = async(req, res) => {
     try {
-        const data = await User.find({})
+        const { name, email, page = 1, limit = 10 } = req.query;
+
+        const query = {};
+
+        if (name) query.name = { $regex: name, $options: "i" };
+        if (email) query.email = { $regex: email, $options: "i" };
+
+        const skip = (Number(page) - 1) * Number(limit);
+        const total = await User.countDocuments(query);
+        const data = await User.find(query).skip(skip).limit(Number(limit))
         
-        res.status(200).json(data);
+        res.status(200).json({
+            data, 
+            total, 
+            page: Number(page), 
+            limit: Number(limit), 
+            totalPages: Math.ceil(total / Number(limit))
+        });
     } catch(error) {
         res.status(500).json({error: error.message})
     }
@@ -219,3 +234,7 @@ export const uploadAvatar = async ( req, res ) => {
         res.status(500).json({error: err.message});
     } 
 };
+
+/**
+ * 
+ */

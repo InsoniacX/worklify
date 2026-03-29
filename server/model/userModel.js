@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "",
     },
+    status: {
+        type: Boolean,
+        required: true,
+        default: false,
+    }
 })
 
 export default mongoose.model("Users", userSchema);

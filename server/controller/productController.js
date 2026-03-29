@@ -8,9 +8,26 @@ import Product from "../model/productModel.js"
  */
 export const fetchAll = async(req, res) => {
     try {
-        const data = await Product.find({})
+        const { name, category, stock, page = 1, limit = 5 } = req.query;
 
-        res.status(200).json(data);
+        const query = {};
+
+        if (name) query.name = { $regex: name, $options: "i" }
+        if (category) query.category = { $regex: category, $options: "i" }
+        if (stock === "low" ) query.stock = { $lte: 10 };
+        if (stock === "high" ) query.stock = { $gt: 10 };
+
+        const skip = (Number(page) - 1) * Number(limit);
+        const total = await Product.countDocuments(query);
+        const data = await Product.find(query).skip(skip).limit(Number(limit)); 
+
+        res.status(200).json({
+            data,
+            total,
+            page: Number(page),
+            limit: Number(limit),
+            totalPages: Math.ceil(total / Number(limit)),
+        });
     } catch(error) {
         res.status(500).json({error: error.message})
     }

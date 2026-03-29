@@ -1,12 +1,21 @@
-export const authFetch = (url: string, options: RequestInit = {}) => {
+export const authFetch = async (url: string, options: RequestInit = {}) => {
     const token = localStorage.getItem("token");
 
-    return fetch(url, {
+    const response = await fetch(url, {
         ...options,
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-            ...options.headers
-        }
-    })
+            ...options.headers,
+        },
+    });
+
+    if (response.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/login"
+    }
+
+    return response
 }
+

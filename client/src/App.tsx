@@ -10,7 +10,7 @@ import {
   ProductEdit,
   ProfilePage,
 } from "@/pages";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+import { ProtectedRoute } from "@/components";
 
 const App = () => {
   return (

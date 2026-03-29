@@ -2,32 +2,55 @@ import { useEffect, useState } from 'react';
 import type { User } from "@/types";
 import { authFetch } from '@/utils/AuthFetch';
 
+// UserFilter Interface
+interface UserFilters {
+    name?: string;
+    email?: string;
+}
+
 /**
- * Get all Users Data
+ * Get all Users Data and Filter it Using Search
  * METHOD: GET
  */
-export const useUsers = () => {
-    const [users, setUsers] = useState<User[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+export const useUsers = (filters: UserFilters = {}, page: number = 1 ) => {
+    const [ users, setUsers ] = useState<User[]>([]);
+    const [ loading, setLoading ] = useState<boolean>(true);
+    const [ error, setError ] = useState<string | null>(null);
+    const [ totalPages, setTotalPages ] = useState<number>(1);
+    const [ total, setTotal ] = useState<number>(0);
 
-    const fetchUsers = async () => {
-        try {
-            const response = await authFetch("http://localhost:8080/api/user");
-            if (!response.ok) return new Error("Failed to Fetch users");
-            const data: User[] = await response.json();
-            console.log(data);
-            setUsers(data);
-        } catch(err) {                      
-            setError((err as Error).message);
-        } finally {
-            setLoading(false);
-        }
-    };
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                setLoading(true);
 
-    useEffect(() => { fetchUsers(); }, [])
+                const params = new URLSearchParams();
+                if (filters.name) params.append("name", filters.name);
+                if (filters.email) params.append("email", filters.email);
+                params.append("page", String(page));
+                params.append("limit", "5");
 
-    return { users, loading, error, refetch: fetchUsers };
+                const response = await authFetch(`http://localhost:8080/api/user?${params.toString()}`);
+                if (!response.ok) throw new Error("Failed to fetch users!");
+                
+                const result = await response.json();
+                console.log(result);
+                console.log(`http://localhost:8080/api/user?${params.toString()}`)
+                console.log("totalPages:", result.totalPages);
+                setUsers(result.data);
+                setTotal(result.total);
+                setTotalPages(result.totalPages);
+            } catch(err) {
+                setError((err as Error).message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUser();
+    }, [filters.name, filters.email]);
+
+    return { users, loading, error, totalPages, total };
 }
 
 /**
