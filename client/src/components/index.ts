@@ -8,5 +8,6 @@ export { default as Forms } from "./ui/Forms";
 export { default as GuestLayout } from './layout/GuestLayout';
 export { default as DashboardLayout } from "./layout/DashboardLayout";
 export { default as ProtectedRoute } from "./ProtectedRoute";
+export { default as AdminRoute } from './AdminRoute';
 export { default as SearchBar } from "./ui/SearchBar";
 export { default as Pagination } from "./ui/Pagination";

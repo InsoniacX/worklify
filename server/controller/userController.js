@@ -8,7 +8,7 @@ import User from "../model/userModel.js";
  */
 export const fetchAll = async(req, res) => {
     try {
-        const { name, email, page = 1, limit = 10 } = req.query;
+        const { name, email, page = 1, limit = 5 } = req.query;
 
         const query = {};
 

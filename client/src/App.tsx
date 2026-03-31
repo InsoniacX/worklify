@@ -6,11 +6,12 @@ import {
   UserEdit,
   LoginPage,
   ProductPage,
-  ProductCreate,
+  ProductInput,
   ProductEdit,
   ProfilePage,
+  SettingPage,
 } from "@/pages";
-import { ProtectedRoute } from "@/components";
+import { AdminRoute, ProtectedRoute } from "@/components";
 
 const App = () => {
   return (
@@ -18,70 +19,92 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route
-          path="/dashboard"
+          path="/admin/dashboard"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <AdminRoute>
+                <Dashboard />
+              </AdminRoute>
             </ProtectedRoute>
           }
         />
         <Route
-          path="/dashboard/profile"
+          path="/admin/users"
           element={
             <ProtectedRoute>
-              <ProfilePage />
+              <AdminRoute>
+                <UserPage />
+              </AdminRoute>
             </ProtectedRoute>
           }
         />
         <Route
-          path="/dashboard/users"
+          path="/admin/users/new"
           element={
             <ProtectedRoute>
-              <UserPage />
+              <AdminRoute>
+                <UserInput />
+              </AdminRoute>
             </ProtectedRoute>
           }
         />
         <Route
-          path="/dashboard/users/new"
+          path="/admin/users/:id/edit"
           element={
             <ProtectedRoute>
-              <UserInput />
+              <AdminRoute>
+                <UserEdit />
+              </AdminRoute>
             </ProtectedRoute>
           }
         />
         <Route
-          path="/dashboard/users/:id/edit"
+          path="/admin/products"
           element={
             <ProtectedRoute>
-              <UserEdit />
+              <AdminRoute>
+                <ProductPage />
+              </AdminRoute>
             </ProtectedRoute>
           }
         />
         <Route
-          path="/dashboard/products/"
+          path="/admin/products"
           element={
             <ProtectedRoute>
-              <ProductPage />
+              <AdminRoute>
+                <ProductInput />
+              </AdminRoute>
             </ProtectedRoute>
           }
         />
-      </Routes>
-      <Routes>
         <Route
-          path="/dashboard/products/new"
+          path="/admin/products"
           element={
             <ProtectedRoute>
-              <ProductCreate />
+              <AdminRoute>
+                <ProductEdit />
+              </AdminRoute>
             </ProtectedRoute>
           }
         />
-      </Routes>
-      <Routes>
         <Route
-          path="/dashboard/products/:id/edit"
+          path="/admin/profile"
           element={
             <ProtectedRoute>
-              <ProductEdit />
+              <AdminRoute>
+                <ProfilePage />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/settings"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <SettingPage />
+              </AdminRoute>
             </ProtectedRoute>
           }
         />

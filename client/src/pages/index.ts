@@ -17,8 +17,9 @@ export { default as UserEdit } from './Dashboard/Users/UserEdit';
 
 // Product Pages (Admin)
 export { default as ProductPage } from './Dashboard/Product/ProductPage';
-export { default as ProductCreate } from './Dashboard/Product/ProductCreate';
+export { default as ProductInput } from './Dashboard/Product/ProductCreate';
 export { default as ProductEdit } from './Dashboard/Product/ProductEdit';
 
 // Profile Pages (Admin)
 export { default as ProfilePage } from './Dashboard/Profile';
+export { default as SettingPage } from './Dashboard/Settings';

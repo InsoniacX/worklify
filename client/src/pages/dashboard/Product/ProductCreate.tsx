@@ -1,4 +1,5 @@
 import { DashboardLayout, Forms } from "@/components";
+import { useToast } from "@/context/ToastContext";
 import { authFetch } from "@/utils/AuthFetch";
 import type React from "react";
 import { useState } from "react";
@@ -8,6 +9,7 @@ const CreateProduct = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,8 +41,9 @@ const CreateProduct = () => {
       }
 
       navigate("/dashboard/products");
+      showToast("Successfully Created Product Data", "success");
     } catch (err) {
-      setError((err as Error).message);
+      showToast("Failed to Create Product Data", "error");
     } finally {
       setLoading(false);
     }

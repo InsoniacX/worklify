@@ -1,4 +1,5 @@
 import { Forms } from "@/components";
+import { useToast } from "@/context/ToastContext";
 import type React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +8,7 @@ export const LoginPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -37,7 +39,13 @@ export const LoginPage = () => {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      navigate("/dashboard");
+      if (user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/app/home");
+      }
+
+      showToast(`It's Good to see you again ${user.name}`, "info");
     } catch (err) {
       setError((err as Error).message);
     } finally {

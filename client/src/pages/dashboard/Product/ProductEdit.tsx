@@ -1,4 +1,5 @@
 import { DashboardLayout, Forms } from "@/components";
+import { useToast } from "@/context/ToastContext";
 import { authFetch } from "@/utils/AuthFetch";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,6 +8,7 @@ const ProductEdit = () => {
   const { id } = useParams<{ id: string }>();
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
@@ -34,7 +36,7 @@ const ProductEdit = () => {
           supplier: data.supplier,
         });
       } catch (err) {
-        setError((err as Error).message);
+        showToast("Failed to Fetch Product Data", "error");
       } finally {
         setFetching(false);
       }
@@ -72,8 +74,9 @@ const ProductEdit = () => {
       }
 
       navigate("/dashboard/products");
+      showToast("Successfully Edited Product Data", "success");
     } catch (err) {
-      setError((err as Error).message);
+      showToast("Failed to Update Product Data", "error");
     }
   };
 

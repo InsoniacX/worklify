@@ -34,9 +34,6 @@ export const useUsers = (filters: UserFilters = {}, page: number = 1 ) => {
                 if (!response.ok) throw new Error("Failed to fetch users!");
                 
                 const result = await response.json();
-                console.log(result);
-                console.log(`http://localhost:8080/api/user?${params.toString()}`)
-                console.log("totalPages:", result.totalPages);
                 setUsers(result.data);
                 setTotal(result.total);
                 setTotalPages(result.totalPages);
@@ -48,7 +45,7 @@ export const useUsers = (filters: UserFilters = {}, page: number = 1 ) => {
         };
 
         fetchUser();
-    }, [filters.name, filters.email]);
+    }, [filters.name, filters.email, page]);
 
     return { users, loading, error, totalPages, total };
 }

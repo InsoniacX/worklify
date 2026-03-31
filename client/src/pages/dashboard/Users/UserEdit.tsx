@@ -1,4 +1,5 @@
 import { DashboardLayout, Forms } from "@/components";
+import { useToast } from "@/context/ToastContext";
 import { authFetch } from "@/utils/AuthFetch";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,6 +8,7 @@ const UserEdit = () => {
   const { id } = useParams<{ id: string }>();
   const [error, setError] = useState<string | null>();
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
@@ -31,7 +33,7 @@ const UserEdit = () => {
           address: data.address,
         });
       } catch (err) {
-        setError((err as Error).message);
+        showToast("Failed to Fetch User Data", "error");
       } finally {
         setFetching(false);
       }
@@ -65,8 +67,9 @@ const UserEdit = () => {
       }
       console.log("Data has been Updated");
       navigate("/dashboard/users");
+      showToast("Successfully Updated User Info", "success");
     } catch (error) {
-      setError((error as Error).message);
+      showToast("Failed to Update User Info", "error");
     } finally {
       setLoading(false);
     }

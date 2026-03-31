@@ -6,8 +6,13 @@ import productRouter from "./routes/productRoute.js";
 import authRouter from "./routes/authRoute.js";
 import { fileURLToPath } from "url";
 import cors from "cors";
-import { protect } from "./middleware/authMiddleware.js";
+import { protect, adminOnly } from "./middleware/authMiddleware.js";
 import path from "path";
+import taskRouter from "./routes/taskRoute.js";
+import teamRouter from "./routes/teamRoute.js";
+import scheduleRouter from "./routes/scheduleRoute.js";
+import notificationRouter from "./routes/notificationRoute.js";
+import activityRouter from "./routes/activityRoute.js";
 
 dotenv.config();
 
@@ -28,8 +33,14 @@ app.use(express.json());
 app.use("/api/auth", authRouter);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use("/api/user", protect, userRouter);
-app.use("/api/product", protect, productRouter);
+app.use("/api/user", protect, adminOnly, userRouter);
+app.use("/api/product", protect, adminOnly, productRouter);
+
+app.use("/api/task", protect, taskRouter);
+app.use("/api/team", protect, teamRouter);
+app.use("/api/schedule", protect, scheduleRouter);
+app.use("/api/notification", protect, notificationRouter);
+app.use("/api/activity", protect, activityRouter);
 
 
 const PORT = process.env.PORT || 8000;

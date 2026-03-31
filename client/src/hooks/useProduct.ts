@@ -33,11 +33,12 @@ export const useProduct = (filters: ProductFilters = {}, page: number = 1) => {
                 params.append("limit", "5");
 
                 const response = await authFetch(`http://localhost:8080/api/product?${params.toString()}`);
-                if (!response.ok) throw new Error("Failed to fetch Products");
+                if (!response.ok) throw new Error("Failed to fetch Data");
+
                 const result = await response.json();
                 setProducts(result.data);
-                setTotalPages(result.totalPages);
                 setTotal(result.total);
+                setTotalPages(result.totalPages);
             } catch(err) {
                 setError((err as Error).message);
             } finally {
@@ -46,9 +47,9 @@ export const useProduct = (filters: ProductFilters = {}, page: number = 1) => {
         }
 
         fetchProducts();
-    }, [filters.name, filters.category, filters.stock]);
+    }, [filters.name, filters.category, filters.stock, page]);
 
-    return { products, loading, error }
+    return { products, loading, error, totalPages, total }
 }
 
 export const useRecentProducts = () => {
