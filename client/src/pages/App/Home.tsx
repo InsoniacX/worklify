@@ -10,22 +10,15 @@ import {
 } from "react-icons/md";
 
 const actionIcon: Record<string, React.ReactNode> = {
-  "created a task": <MdTask size={13} className="text-blue-400" />,
-  "updated a task": <MdTask size={13} className="text-amber-400" />,
-  "deleted a task": <MdTask size={13} className="text-red-400" />,
-  "created a team": <MdGroup size={13} className="text-blue-400" />,
-  "added member to team": <MdGroup size={13} className="text-teal-400" />,
-  "completed a task": <MdCheckCircle size={13} className="text-teal-400" />,
+  "Created a Task": <MdTask size={13} className="text-blue-400" />,
+  "Updated a Task": <MdTask size={13} className="text-amber-400" />,
+  "Deleted a Task": <MdTask size={13} className="text-red-400" />,
+  "Created a Team": <MdGroup size={13} className="text-teal-400" />,
+  "Added a member to Team": <MdGroup size={13} className="text-blue-400" />,
+  "Deleted a member to Team": <MdGroup size={13} className="text-red-400" />, // ← both cases
 };
-
 const Homepage = () => {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-
-  if (user) {
-    console.log(user.id);
-  } else {
-    console.log("User not found");
-  }
 
   const [activities, setActivities] = useState<Activity[]>([]);
   const [myTasks, setMyTasks] = useState<Task[]>([]);
@@ -126,7 +119,6 @@ const Homepage = () => {
                     <p className="text-[12px] text-neutral-300">
                       <span className="font-medium text-neutral-100">
                         {(activity.user as any)?.name || "Someone"}
-                        {console.log(activity.createdAt)}
                       </span>{" "}
                       {activity.action}
                       {activity.meta?.taskTitle && (

@@ -1,6 +1,7 @@
 import Team from "../model/teamModel.js";
 import Activity from "../model/activityModel.js";
 import Notification from "../model/notificationModel.js";
+import User from "../model/userModel.js";
 
 /**
  * Fetch All Teams in the Database
@@ -134,38 +135,56 @@ export const deleteTeam = async (req, res) => {
  */
 export const addMember = async (req, res) => {
     try {
-        const { userId, role = "member" } = req.body;
+        console.log("step 1 - Initialazing Form");
+        const { email, userId, role = "member" } = req.body;
+
+        console.log("email received:", email);
+        const userToAdd = await User.findOne({ email });
+        if (!userToAdd) {
+            res.status(404).json({ message: "User not Found" })
+        }
+
         const team = await Team.findById(req.params.id);
         if (!team) return res.status(404).json({ message: "Team Not Found" });
+        console.log("Finish");
 
+        console.log("step 2 - Check if user is already member");
         const alreadyMember = team.members.some(
             (m) => m.user.toString() === userId
         );
-
+        
         if (alreadyMember) {
             return res.status(400).json({ message: "This User already a member of this team" });
         }
+        console.log("Finish");
 
-        team.members.push({ user: userId, role })
+        console.log("step 3 - Push new Member to an members array");
+        team.members.push({ user: userToAdd._id, role })
         await team.save();
+        console.log("Finish")
 
+        /* console.log("step 4 - Push new Notification to added Member")
         await Notification.create({
             message: `You have been added to team ${team.name}`,
             type: "team",
             user: userId,
             link: `/app/teams/${team._id}`,
         });
+        console.log("finish"); */
 
+        console.log("step 4 - Create a new Activity")
         await Activity.create({
             action: "Added a member to Team",
             user: req.user.id,
             team: team._id,
             meta: { userId, teamName: team.name }
         });
+        console.log("Finish");
 
         res.status(200).json(team);
     } catch(err) {
-        res.status(500).json({ error: err.message });
+        // res.status(500).json({ error: err.message });
+        console.error(err);
     }
 }
 

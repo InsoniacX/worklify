@@ -96,7 +96,7 @@ const DashboardLayout = ({ children, title }: DashboardLayoutProps) => {
       <aside className="w-50 shrink-0 bg-[#0f0f0d] border-r border-neutral-900 flex flex-col overflow-y-auto">
         {/* Logo */}
         <div className="px-5 pt-5 pb-6 text-[15px] font-medium text-neutral-100">
-          <span className="text-blue-400">●</span> GCI Dashboard
+          <span className="text-blue-400">●</span> Worklify Dashboard
         </div>
 
         {/* Nav */}

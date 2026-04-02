@@ -16,6 +16,7 @@ const UserEdit = () => {
     name: "",
     email: "",
     address: "",
+    role: "",
   });
   // const [success, setSuccess] = useState<boolean>(true);
 
@@ -31,6 +32,7 @@ const UserEdit = () => {
           name: data.name,
           email: data.email,
           address: data.address,
+          role: data.role,
         });
       } catch (err) {
         showToast("Failed to Fetch User Data", "error");

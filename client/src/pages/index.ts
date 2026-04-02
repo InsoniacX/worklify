@@ -32,3 +32,6 @@ export { default as Homepage } from './App/Home';
 
 // TaskPage (User)
 export { default as TasksPage } from './App/Taskpage';
+
+// Teampage (User)
+export { default as TeamPage } from './App/Teampage';

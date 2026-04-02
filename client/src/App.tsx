@@ -12,6 +12,7 @@ import {
   SettingPage,
   Homepage,
   TasksPage,
+  TeamPage,
 } from "@/pages";
 import { AdminRoute, ProtectedRoute } from "@/components";
 
@@ -127,6 +128,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <TasksPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/app/teams"
+          element={
+            <ProtectedRoute>
+              <TeamPage />
             </ProtectedRoute>
           }
         />
