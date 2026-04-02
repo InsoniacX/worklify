@@ -15,7 +15,7 @@ const UserPage = () => {
   const { users, loading, totalPages } = useUsers(filters, page);
 
   const handleEdit = (id: string) => {
-    navigate(`/dashboard/users/${id}/edit`);
+    navigate(`/admin/dashboard/users/${id}/edit`);
   };
 
   const handleDelete = async (id: string) => {

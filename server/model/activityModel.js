@@ -21,9 +21,12 @@ const activitySchema = new mongoose.Schema({
         default: null,
     },
     meta: {
-        type: Object,
+        type: mongoose.Schema.Types.Mixed,
         default: {},
     },
-}, { timestamp: true })
+}, { timestamps: true })
+
+activitySchema.index({ user: 1 });
+activitySchema.index({ createdAt: -1 });
 
 export default mongoose.model("Activity", activitySchema);

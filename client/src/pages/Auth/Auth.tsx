@@ -39,10 +39,10 @@ export const LoginPage = () => {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      if (user.role === "admin") {
+      if (user.role === "admin" || user.role === "owner") {
         navigate("/admin/dashboard");
       } else {
-        navigate("/app/home");
+        navigate("/app");
       }
 
       showToast(`It's Good to see you again ${user.name}`, "info");

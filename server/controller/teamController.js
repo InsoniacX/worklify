@@ -2,6 +2,11 @@ import Team from "../model/teamModel.js";
 import Activity from "../model/activityModel.js";
 import Notification from "../model/notificationModel.js";
 
+/**
+ * Fetch All Teams in the Database
+ * METHOD: GET
+ * URL: http://localhost:8080/api/team
+ */
 export const fetchAllTeams = async (req, res) => {
     try {
         const teams = await Team.find()
@@ -15,6 +20,11 @@ export const fetchAllTeams = async (req, res) => {
     }
 }
 
+/**
+ * Fetch Users Team
+ * METHOD: GET
+ * URL: http://localhost:8080/api/team/my
+ */
 export const fetchMyTeams = async (req, res) => {
     try {
         const teams = await Team.find({ "members.user": req.user.id })
@@ -27,6 +37,11 @@ export const fetchMyTeams = async (req, res) => {
     }
 }
 
+/**
+ * Fetch Team By ID
+ * METHOD: GET
+ * URL: http://localhost:8080/api/team/:id
+ */
 export const fetchTeamById = async (req, res) => {
     try {
         const team = await Team.findById(req.params.id)
@@ -41,6 +56,11 @@ export const fetchTeamById = async (req, res) => {
     }
 }
 
+/**
+ * Create a Team
+ * METHOD: POST
+ * URL: http://localhost:8080/api/team
+ */
 export const createTeam = async (req, res) => {
     try {
         const { name, description } = req.body;
@@ -68,6 +88,11 @@ export const createTeam = async (req, res) => {
     }
 }
 
+/**
+ * Update Team Information
+ * METHOD: PATCH
+ * URL: http://localhost:8080/api/team/:id
+ */
 export const updateTeam = async (req, res) => {
     try {
         const team = await Team.findById(req.params.id);
@@ -85,6 +110,11 @@ export const updateTeam = async (req, res) => {
     }
 }
 
+/**
+ * DELETE Team
+ * METHOD: DELETE
+ * URL: http://localhost:8080/api/team/:id
+ */
 export const deleteTeam = async (req, res) => {
     try {
         const team = await Team.findById(req.params.id);
@@ -97,6 +127,11 @@ export const deleteTeam = async (req, res) => {
     }
 }
 
+/**
+ * Add Member to the Team
+ * METHOD: POST
+ * URL: http://localhost:8080/api/:id/members
+ */
 export const addMember = async (req, res) => {
     try {
         const { userId, role = "member" } = req.body;
@@ -134,6 +169,11 @@ export const addMember = async (req, res) => {
     }
 }
 
+/**
+ * Remove member from the Team
+ * METHOD: DELETE
+ * URL: http://localhost:8080/api/team/:id/members/:userId
+ */
 export const removeMember = async (req, res) => {
     try {
         const team = await Team.findById(req.params.id);

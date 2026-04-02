@@ -10,6 +10,8 @@ import {
   ProductEdit,
   ProfilePage,
   SettingPage,
+  Homepage,
+  TasksPage,
 } from "@/pages";
 import { AdminRoute, ProtectedRoute } from "@/components";
 
@@ -18,6 +20,8 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+
+        {/* Admin Dashboard */}
         <Route
           path="/admin/dashboard"
           element={
@@ -29,7 +33,7 @@ const App = () => {
           }
         />
         <Route
-          path="/admin/users"
+          path="/admin/dashboard/users"
           element={
             <ProtectedRoute>
               <AdminRoute>
@@ -39,7 +43,7 @@ const App = () => {
           }
         />
         <Route
-          path="/admin/users/new"
+          path="/admin/dashboard/users/new"
           element={
             <ProtectedRoute>
               <AdminRoute>
@@ -49,7 +53,7 @@ const App = () => {
           }
         />
         <Route
-          path="/admin/users/:id/edit"
+          path="/admin/dashboard/users/:id/edit"
           element={
             <ProtectedRoute>
               <AdminRoute>
@@ -59,7 +63,7 @@ const App = () => {
           }
         />
         <Route
-          path="/admin/products"
+          path="/admin/dashboard/products"
           element={
             <ProtectedRoute>
               <AdminRoute>
@@ -69,7 +73,7 @@ const App = () => {
           }
         />
         <Route
-          path="/admin/products"
+          path="/admin/dashboard/products/new"
           element={
             <ProtectedRoute>
               <AdminRoute>
@@ -79,7 +83,7 @@ const App = () => {
           }
         />
         <Route
-          path="/admin/products"
+          path="/admin/dashboard/products/:id/edit"
           element={
             <ProtectedRoute>
               <AdminRoute>
@@ -89,7 +93,7 @@ const App = () => {
           }
         />
         <Route
-          path="/admin/profile"
+          path="/admin/dashboard/profile"
           element={
             <ProtectedRoute>
               <AdminRoute>
@@ -99,12 +103,30 @@ const App = () => {
           }
         />
         <Route
-          path="/admin/settings"
+          path="/admin/dashboard/settings"
           element={
             <ProtectedRoute>
               <AdminRoute>
                 <SettingPage />
               </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* App */}
+        <Route
+          path="/app"
+          element={
+            <ProtectedRoute>
+              <Homepage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/app/tasks"
+          element={
+            <ProtectedRoute>
+              <TasksPage />
             </ProtectedRoute>
           }
         />

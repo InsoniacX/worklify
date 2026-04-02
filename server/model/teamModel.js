@@ -26,6 +26,6 @@ const teamSchema = new mongoose.Schema({
         ref: "User",
         required: true,
     },
-}, { timestamp: true });
+}, { timestamps: true });
 
 export default mongoose.model("Team", teamSchema);

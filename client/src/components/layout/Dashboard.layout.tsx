@@ -1,9 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Avatar } from "..";
 import NavItem from "../ui/NavItem";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   MdAccessTime,
+  MdApps,
   MdBarChart,
   MdDashboard,
   MdInventory,
@@ -12,6 +13,7 @@ import {
   MdPerson,
   MdSettings,
 } from "react-icons/md";
+import { FiActivity, FiUsers } from "react-icons/fi";
 
 export interface DashboardLayoutProps {
   children: ReactNode;
@@ -23,19 +25,29 @@ const navLinks = [
     section: "Main",
     items: [
       {
-        url: "/dashboard",
+        url: "/admin/dashboard",
         label: "Dashboard",
         icon: <MdDashboard size={14} />,
       },
       {
-        url: "/dashboard/users",
+        url: "/admin/dashboard/users",
         label: "Users",
         icon: <MdPeople size={14} />,
       },
       {
-        url: "/dashboard/products",
+        url: "/admin/dashboard/products",
         label: "Products",
         icon: <MdInventory size={14} />,
+      },
+      {
+        url: "/admin/dashboard/teams",
+        label: "Teams",
+        icon: <FiUsers size={14} />,
+      },
+      {
+        url: "/admin/dashboard/activities",
+        label: "Activities",
+        icon: <FiActivity size={14} />,
       },
     ],
   },
@@ -43,15 +55,15 @@ const navLinks = [
     section: "Analytics",
     items: [
       {
-        url: "/dashboard/reports",
+        url: "/admin/dashboard/reports",
         label: "Reports",
         icon: <MdBarChart size={14} />,
       },
-      {
-        url: "/dashboard/activity",
+      /* {
+        url: "/admin/dashboard/activity",
         label: "Activity",
         icon: <MdAccessTime size={14} />,
-      },
+      }, */
     ],
   },
 ];
@@ -103,6 +115,12 @@ const DashboardLayout = ({ children, title }: DashboardLayoutProps) => {
             ))}
           </div>
         ))}
+        <Link
+          to="/app"
+          className="flex items-center gap-2.5 px-3 py-2 text-[12px] text-neutral-600 hover:text-neutral-300 hover:bg-neutral-900 rounded-lg transition-colors mx-2 mb-1"
+        >
+          <MdApps size={14} /> Switch to app
+        </Link>
 
         {/* Footer */}
         <div

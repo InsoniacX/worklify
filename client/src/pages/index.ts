@@ -23,3 +23,12 @@ export { default as ProductEdit } from './Dashboard/Product/ProductEdit';
 // Profile Pages (Admin)
 export { default as ProfilePage } from './Dashboard/Profile';
 export { default as SettingPage } from './Dashboard/Settings';
+
+/**
+ * User Pages
+ */
+// Homepage (User)
+export { default as Homepage } from './App/Home';
+
+// TaskPage (User)
+export { default as TasksPage } from './App/Taskpage';

@@ -1,5 +1,6 @@
 import Activity from "../model/activityModel.js";
 import Task from "../model/taskModel.js";
+import User from "../model/userModel.js";
 
 export const fetchAllTask = async (req, res) => {
     try {
@@ -46,51 +47,69 @@ export const fetchTaskById = async (req, res) => {
 }
 
 export const fetchMyTasks = async (req, res) => {
-    try {
-        const { status, priority } = req.query;
-        const query = { assignedTo: req.user.id };
+  try {
+    const { status, priority } = req.query;
 
-        if (status) query.status = status;
-        if (priority) query.priority = priority;
+    const query = {
+      $or: [
+        { assignedTo: req.user.id },
+        { createdBy:  req.user.id },
+      ]
+    };
 
-        const data = await Task.find(query)
-            .populate("createdBy", "name email picture")
-            .populate("team", "name")
-            .sort({ createdAt: -1 })
-    } catch(err) {
+    if (status)   query.status   = status;
+    if (priority) query.priority = priority;
 
-    }
-}
+    const data = await Task.find(query)
+      .populate("createdBy", "name email picture")
+      .populate("team",      "name")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(data);
+  } catch(err) {
+    console.log("fetchMyTasks error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+};
 
 export const createTask = async (req, res) => {
+
     try {
+        console.log("step 1 - entered");
         const { title, description, status, priority, dueDate, assignedTo, team } = req.body;
+        console.log("step 2 - title:", title);
 
-        if (!title) return res.status(400).json({ message: "Title is Required" })
-        
         const task = new Task({
-            title,
-            description,
-            status,
-            priority,
-            dueDate,
-            assignedTo,
-            team,
-            createdBy: req.user.id,
+          title,
+          description,
+          status,
+          priority,
+          dueDate:    dueDate    || null,
+          assignedTo: assignedTo || [req.user.id],
+          team:       team       || null,
+          createdBy:  req.user.id,
         });
-
+        console.log("step 3 - task created");
+        
         const saved = await task.save();
+        console.log("step 4 - saved:", saved._id);
 
-        await Activity.create({
-            action: "Created a Task",
-            user: req.user.id,
-            task: saved._id,
-            team: team || null,
-            meta: { taskTitle: title },
-        });
+        try {
+            await Activity.create({
+                action: "Created a Task",
+                user:   req.user.id,
+                task:   saved._id,
+                team:   team || null,
+                meta:   { taskTitle: title },
+            });
+            console.log("step 5 - activity created");
+        } catch (actErr) {
+            console.log("Activity error:", actErr.message);
+        }
 
         res.status(201).json(saved);
     } catch(err) {
+        console.log("ERROR:", err.message);
         res.status(500).json({ error: err.message });
     }
 }

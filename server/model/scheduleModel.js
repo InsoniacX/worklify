@@ -36,6 +36,6 @@ const scheduleSchema = new mongoose.Schema({
         ref: "Team",
         default: null,
     }
-}, { timestamp: true });
+}, { timestamps: true });
 
 export default mongoose.model("Schedule", scheduleSchema);

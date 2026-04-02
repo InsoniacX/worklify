@@ -66,7 +66,7 @@ const UserEdit = () => {
         throw new Error(result.message);
       }
       console.log("Data has been Updated");
-      navigate("/dashboard/users");
+      navigate("/admin/dashboard/users");
       showToast("Successfully Updated User Info", "success");
     } catch (error) {
       showToast("Failed to Update User Info", "error");

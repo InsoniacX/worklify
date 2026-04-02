@@ -26,7 +26,6 @@ const taskSchema = new mongoose.Schema({
     assignedTo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true,
     },
     team: {
         type: mongoose.Schema.Types.ObjectId,
@@ -38,6 +37,6 @@ const taskSchema = new mongoose.Schema({
         ref: "User",
         required: true,
     }
-}, {timestamp: true});
+}, {timestamps: true});
 
 export default mongoose.model("Task", taskSchema);

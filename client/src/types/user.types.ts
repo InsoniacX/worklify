@@ -8,11 +8,11 @@ export interface User {
     __v: number;
 }
 
-export interface task {
+export interface Task {
     _id: string;
     title: string;
     description: string;
-    status: "todo" | "in progress" | "review" | "done";
+    status: "todo" | "in progress" | "reviews" | "done";
     priority: "low" | "medium" | "high";
     dueDate: string | null;
     assignedTo: User[];
@@ -23,24 +23,24 @@ export interface task {
 }
 
 export interface Team {
-  _id:         string;
-  name:        string;
+  _id: string;
+  name: string;
   description: string;
-  members:     { user: User; role: "owner" | "admin" | "member" }[];
-  createdBy:   User;
-  createdAt:   string;
+  members: { user: User; role: "owner" | "admin" | "member" }[];
+  createdBy: User;
+  createdAt: string;
 }
 
 export interface Schedule {
-  _id:         string;
-  title:       string;
+  _id: string;
+  title: string;
   description: string;
-  date:        string;
-  startTime:   string;
-  endTime:     string;
-  type:        "meeting" | "deadline" | "reminder" | "event";
-  user:        string;
-  team:        string | null;
+  date: string;
+  startTime: string;
+  endTime: string;
+  type: "meeting" | "deadline" | "reminder" | "event";
+  user: string;
+  team: string | null;
 }
 
 export interface Notification {

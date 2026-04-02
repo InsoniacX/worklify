@@ -1,18 +1,30 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from "cors";
+import { fileURLToPath } from "url";
+import path from "path";
+
+/* Middleware */
+import { protect, adminOnly } from "./middleware/authMiddleware.js";
+
+/* Route */
 import userRouter from "./routes/userRoute.js";
 import productRouter from "./routes/productRoute.js";
 import authRouter from "./routes/authRoute.js";
-import { fileURLToPath } from "url";
-import cors from "cors";
-import { protect, adminOnly } from "./middleware/authMiddleware.js";
-import path from "path";
 import taskRouter from "./routes/taskRoute.js";
 import teamRouter from "./routes/teamRoute.js";
 import scheduleRouter from "./routes/scheduleRoute.js";
 import notificationRouter from "./routes/notificationRoute.js";
 import activityRouter from "./routes/activityRoute.js";
+
+/* Model */
+import "./model/userModel.js";
+import "./model/taskModel.js";
+import "./model/teamModel.js";
+import "./model/activityModel.js";
+import "./model/notificationModel.js";
+import "./model/scheduleModel.js";
 
 dotenv.config();
 
@@ -56,3 +68,4 @@ mongoose.connect(MONGOURL).then(() => {
         console.log(`Server is Running on port: ${PORT}`)
     });
 }).catch((error) => console.log(error))
+ 
