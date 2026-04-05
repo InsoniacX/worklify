@@ -3,19 +3,22 @@ import type { Activity, Schedule, Task } from "@/types";
 import { authFetch } from "@/utils/AuthFetch";
 import { useEffect, useState } from "react";
 import {
+  MdAccessibilityNew,
   MdCalendarMonth,
-  MdCheckCircle,
   MdGroup,
   MdTask,
 } from "react-icons/md";
 
 const actionIcon: Record<string, React.ReactNode> = {
-  "Created a Task": <MdTask size={13} className="text-blue-400" />,
-  "Updated a Task": <MdTask size={13} className="text-amber-400" />,
-  "Deleted a Task": <MdTask size={13} className="text-red-400" />,
-  "Created a Team": <MdGroup size={13} className="text-teal-400" />,
-  "Added a member to Team": <MdGroup size={13} className="text-blue-400" />,
-  "Deleted a member to Team": <MdGroup size={13} className="text-red-400" />, // ← both cases
+  "created a task": <MdTask size={13} className="text-blue-400" />,
+  "updated a task": <MdTask size={13} className="text-amber-400" />,
+  "deleted a task": <MdTask size={13} className="text-red-400" />,
+  "updated member role": (
+    <MdAccessibilityNew size={13} className="text-amber-400" />
+  ),
+  "created a team": <MdGroup size={13} className="text-teal-400" />,
+  "added a member to team": <MdGroup size={13} className="text-blue-400" />,
+  "deleted a member from team": <MdGroup size={13} className="text-red-400" />, // ← both cases
 };
 const Homepage = () => {
   const user = JSON.parse(localStorage.getItem("user") || "{}");

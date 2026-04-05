@@ -1,6 +1,6 @@
+import { authFetch } from "@/utils/AuthFetch";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
-  MdApps,
   MdCalendarMonth,
   MdDashboard,
   MdGroup,
@@ -65,6 +65,7 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -77,6 +78,25 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const fetchUnread = async () => {
+      try {
+        const response = await authFetch(
+          "http://localhost:8080/api/notification"
+        );
+        if (!response.ok) return;
+        const data = await response.json();
+        setUnreadCount(data.filter((n: any) => !n.read).length);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleLogout = () => {
@@ -211,9 +231,14 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
           {/* Notification bell */}
           <button
             onClick={() => navigate("/app/notifications")}
-            className="w-8 h-8 flex items-center justify-center rounded-lg border border-neutral-900 text-neutral-500 hover:bg-neutral-900 hover:text-neutral-300 transition-colors"
+            className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-neutral-900 text-neutral-500 hover:bg-neutral-900 hover:text-neutral-300 transition-colors"
           >
             <MdNotifications size={16} />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-blue-600 text-white text-[9px] font-medium flex items-center justify-center">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
           </button>
         </div>
 

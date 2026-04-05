@@ -25,9 +25,13 @@ export const createSchedule = async (req, res) => {
     try {
         const { title, description, date, startTime, endTime, type, team } = req.body;
 
+        console.log("test 1 - taking data from Front End");
+
         if (!title || !date || !startTime || !endTime ) {
             return res.status(400).json({ message: "Title, Date, Start Time, and End Time are Required" });
         }
+
+        console.log("test 2 - Validation Completed")
 
         const schedule = new Schedule({
             title,
@@ -40,7 +44,11 @@ export const createSchedule = async (req, res) => {
             user: req.user.id,
         });
 
+        console.log("test 3 - Storing Data into Backend Completed ");
+        console.log(schedule);
+
         const saved = await schedule.save();
+        console.log("test 4 - Saving data into Database Completed");
         res.status(201).json(saved);
     } catch(err) {
         res.status(500).json({ error: err.message });

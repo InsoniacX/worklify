@@ -12,12 +12,12 @@ export interface Task {
     _id: string;
     title: string;
     description: string;
-    status: "todo" | "in progress" | "reviews" | "done";
+    status: "todo" | "in progress" | "review" | "done";
     priority: "low" | "medium" | "high";
     dueDate: string | null;
     assignedTo: User[];
     createdBy: User;
-    team: string | null;
+    team: Team | null;
     createdAt: string;
     updatedAt: string;
 }

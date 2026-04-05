@@ -163,14 +163,14 @@ export const addMember = async (req, res) => {
         await team.save();
         console.log("Finish")
 
-        /* console.log("step 4 - Push new Notification to added Member")
+        console.log("step 4 - Push new Notification to added Member")
         await Notification.create({
             message: `You have been added to team ${team.name}`,
             type: "team",
             user: userId,
             link: `/app/teams/${team._id}`,
         });
-        console.log("finish"); */
+        console.log("finish");
 
         console.log("step 4 - Create a new Activity")
         await Activity.create({
@@ -196,6 +196,7 @@ export const addMember = async (req, res) => {
 export const removeMember = async (req, res) => {
     try {
         const team = await Team.findById(req.params.id);
+        const member = await Team.findById(req.params.userId);
         if (!team) return res.status(404).json({ message: "Team not Found" });
 
         team.members = team.members.filter(
@@ -203,8 +204,69 @@ export const removeMember = async (req, res) => {
         );
         await team.save();
 
+        await Activity.create({
+            action: "Remove a member from Team",
+            user: req.user.id,
+            team: team._id,
+            meta: { member, teamName: team.name }
+        });
+
         res.status(200).json(team);
     } catch(err) {
         res.status(500).json({ error: err.message })
     }
 }
+
+/**
+ * Update Member Role
+ * METHOD: PATCH
+ * URL: http://localhost:8080/api/team/:id/members/:userId/role
+ */
+export const updateMemberRole = async (req, res) => {
+  try {
+    const { role } = req.body;
+
+    if (!["admin", "member"].includes(role)) {
+      return res.status(400).json({ message: "Invalid role" });
+    }
+
+    const team = await Team.findById(req.params.id);
+    if (!team) return res.status(404).json({ message: "Team not found" });
+
+    // Check if requester is owner
+    const requester = team.members.find(
+      (m) => m.user.toString() === req.user.id
+    );
+    if (!requester || requester.role !== "owner") {
+      return res.status(403).json({ message: "Only the owner can change roles" });
+    }
+
+    const member = team.members.find(
+      (m) => m.user.toString() === req.params.userId
+    );
+    if (!member) return res.status(404).json({ message: "Member not found" });
+
+    const oldRole = member.role;
+    member.role   = role;
+    await team.save();
+
+    await Notification.create({
+      message: `Your role in team "${team.name}" has been changed from ${oldRole} to ${role}`,
+      type:    "team",
+      user:    req.params.userId,
+      link:    `/app/teams`,
+    });
+
+    await Activity.create({
+      action: "updated member role",
+      user:   req.user.id,
+      team:   team._id,
+      meta:   { userId: req.params.userId, oldRole, newRole: role, teamName: team.name },
+    });
+
+    res.status(200).json(team);
+  } catch (error) {
+    console.log("updateMemberRole error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+};

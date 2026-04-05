@@ -1,5 +1,6 @@
 import Activity from "../model/activityModel.js";
 import Task from "../model/taskModel.js";
+import Notification from "../model/notificationModel.js";
 import User from "../model/userModel.js";
 
 export const fetchAllTask = async (req, res) => {
@@ -49,7 +50,6 @@ export const fetchTaskById = async (req, res) => {
 export const fetchMyTasks = async (req, res) => {
   try {
     const { status, priority } = req.query;
-
     const query = {
       $or: [
         { assignedTo: req.user.id },
@@ -61,13 +61,13 @@ export const fetchMyTasks = async (req, res) => {
     if (priority) query.priority = priority;
 
     const data = await Task.find(query)
-      .populate("createdBy", "name email picture")
-      .populate("team",      "name")
+      .populate("assignedTo", "name email picture") // ← add this
+      .populate("createdBy",  "name email picture")
+      .populate("team",       "name")
       .sort({ createdAt: -1 });
 
     res.status(200).json(data);
   } catch(err) {
-    console.log("fetchMyTasks error:", err.message);
     res.status(500).json({ error: err.message });
   }
 };
@@ -75,37 +75,48 @@ export const fetchMyTasks = async (req, res) => {
 export const createTask = async (req, res) => {
 
     try {
-        console.log("step 1 - entered");
         const { title, description, status, priority, dueDate, assignedTo, team } = req.body;
-        console.log("step 2 - title:", title);
 
         const task = new Task({
           title,
           description,
           status,
           priority,
-          dueDate:    dueDate    || null,
+          dueDate: dueDate || null,
           assignedTo: assignedTo || [req.user.id],
-          team:       team       || null,
+          team: team || null,
           createdBy:  req.user.id,
         });
-        console.log("step 3 - task created");
         
         const saved = await task.save();
-        console.log("step 4 - saved:", saved._id);
+
+        if (saved.assignedTo && saved.assignedTo.length > 0) {
+        const notifications = saved.assignedTo
+            .filter((userId) => userId.toString() !== req.user.id)
+            .map((userId) => ({
+              message: `You have been assigned to task "${title}"`,
+              type:    "task",
+              user:    userId,
+              link:    `/app/tasks`,
+            }));
+
+          if (notifications.length > 0) {
+            await Notification.insertMany(notifications);
+          }
+        }
 
         try {
             await Activity.create({
-                action: "Created a Task",
+                action: "created a task",
                 user:   req.user.id,
                 task:   saved._id,
                 team:   team || null,
                 meta:   { taskTitle: title },
             });
-            console.log("step 5 - activity created");
         } catch (actErr) {
             console.log("Activity error:", actErr.message);
         }
+        
 
         res.status(201).json(saved);
     } catch(err) {
@@ -121,8 +132,29 @@ export const updateTask = async (req, res) => {
 
         const updated = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true }).populate("assignedTo", "name email picture").populate("createdBy", "name email picture");
 
+        if (req.body.assignedTo) {
+        const newMembers = req.body.assignedTo.filter(
+            (userId) => !task.assignedTo.map((id) => id.toString()).includes(userId)
+        );
+
+        if (newMembers.length > 0) {
+            const notifications = newMembers
+              .filter((userId) => userId.toString() !== req.user.id)
+              .map((userId) => ({
+                message: `You have been assigned to task "${updated.title}"`,
+                type:    "task",
+                user:    userId,
+                link:    `/app/tasks`,
+              }));
+
+            if (notifications.length > 0) {
+              await Notification.insertMany(notifications);
+            }
+          }
+        }
+
         await Activity.create({
-            action: "Updated a Task",
+            action: "updated a task",
             user: req.user.id,
             task: updated._id,
             meta: { taskTitle: updated.title },
@@ -142,7 +174,7 @@ export const deleteTask = async (req, res) => {
         await Task.findByIdAndDelete(req.params.id);
 
         await Activity.create({
-            action: "Deleted a Task",
+            action: "deleted a task",
             user: req.user.id,
             meta: { taskTitle: task.title },
         });

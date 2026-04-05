@@ -3,7 +3,7 @@ import { useToast } from "@/context/ToastContext";
 import type { Team } from "@/types";
 import { authFetch } from "@/utils/AuthFetch";
 import React, { useEffect, useState } from "react";
-import { MdAdd, MdDelete, MdGroup, MdPersonAdd } from "react-icons/md";
+import { MdAdd, MdClose, MdDelete, MdGroup, MdPersonAdd } from "react-icons/md";
 
 const TeamsPage = () => {
   const { showToast } = useToast();
@@ -13,6 +13,11 @@ const TeamsPage = () => {
   const [selected, setSelected] = useState<Team | null>(null);
   const [newMemberEmail, setNewMemberEmail] = useState("");
   const [form, setForm] = useState({ name: "", description: "" });
+
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const isOwner = selected?.members.some(
+    (m) => (m.user as any)._id === currentUser._id && m.role === "owner"
+  );
 
   const fetchMyTeams = async () => {
     try {
@@ -62,11 +67,36 @@ const TeamsPage = () => {
       );
       console.log(response.body);
       if (!response.ok) throw new Error("Failed to Add new Member");
-      showToast("Member Added", "error");
+      showToast("Member Added", "success");
       setNewMemberEmail("");
       fetchMyTeams();
     } catch (err) {
       showToast("Failed to Add new Member", "error");
+    }
+  };
+
+  const handleRemoveMember = async (teamId: string, userId: string) => {
+    try {
+      const response = await authFetch(
+        `http://localhost:8080/api/team/${teamId}/members/${userId}`,
+        { method: "DELETE" }
+      );
+      if (!response.ok) throw new Error("Failed to remove member");
+      showToast("Member removed", "success");
+      fetchMyTeams();
+      // Update selected team state too
+      setSelected((prev) =>
+        prev
+          ? {
+              ...prev,
+              members: prev.members.filter(
+                (m) => (m.user as any)._id !== userId
+              ),
+            }
+          : null
+      );
+    } catch {
+      showToast("Failed to remove member", "error");
     }
   };
 
@@ -81,6 +111,38 @@ const TeamsPage = () => {
       fetchMyTeams();
     } catch (err) {
       showToast("Failed to Delete this Team", "error");
+    }
+  };
+
+  const handleUpdateRole = async (
+    teamId: string,
+    userId: string,
+    role: string
+  ) => {
+    try {
+      const response = await authFetch(
+        `http://localhost:8080/api/team/${teamId}/members/${userId}/role`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({ role }),
+        }
+      );
+      if (!response.ok) throw new Error("Failed to update role");
+      showToast("Role updated", "success");
+      fetchMyTeams();
+      // Update selected team state
+      setSelected((prev) =>
+        prev
+          ? {
+              ...prev,
+              members: prev.members.map((m) =>
+                (m.user as any)._id === userId ? { ...m, role: role as any } : m
+              ),
+            }
+          : null
+      );
+    } catch {
+      showToast("Failed to update role", "error");
     }
   };
 
@@ -241,13 +303,44 @@ const TeamsPage = () => {
                         {(m.user as any).email}
                       </p>
                     </div>
-                    <span
-                      className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${
-                        roleColor[m.role]
-                      }`}
-                    >
-                      {m.role}
-                    </span>
+
+                    {/* Role — editable if current user is owner and member is not owner */}
+                    {isOwner && m.role !== "owner" ? (
+                      <select
+                        value={m.role}
+                        onChange={(e) =>
+                          handleUpdateRole(
+                            selected._id,
+                            (m.user as any)._id,
+                            e.target.value
+                          )
+                        }
+                        className="bg-[#0a0a09] border border-neutral-800 rounded-lg px-2 py-1 text-[11px] text-neutral-400 focus:outline-none focus:border-blue-800 transition-colors"
+                      >
+                        <option value="member">member</option>
+                        <option value="admin">admin</option>
+                      </select>
+                    ) : (
+                      <span
+                        className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${
+                          roleColor[m.role]
+                        }`}
+                      >
+                        {m.role}
+                      </span>
+                    )}
+
+                    {/* Remove button — only for owner, not on owner member */}
+                    {isOwner && m.role !== "owner" && (
+                      <button
+                        onClick={() =>
+                          handleRemoveMember(selected._id, (m.user as any)._id)
+                        }
+                        className="text-neutral-700 hover:text-red-400 transition-colors"
+                      >
+                        <MdClose size={14} />
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>

@@ -5,7 +5,7 @@ export const fetchMyNotifications = async (req, res) => {
         const notifications = await Notification.find({ user: req.user.id })
             .sort({ createdAt: -1 })
             .limit(20);
-        res.status(200).json(notification);
+        res.status(200).json(notifications);
     } catch(err) {
         res.status(500).json({ error: err.message });
     }

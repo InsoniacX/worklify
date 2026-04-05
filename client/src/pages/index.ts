@@ -2,7 +2,7 @@
  * Guest Pages
  */
 export { default as LandingPage } from './home';
-export { LoginPage } from './Auth/Auth';
+export { default as AuthPage } from './Auth/Auth';
 
 /**
  * Admin Pages
@@ -31,7 +31,10 @@ export { default as SettingPage } from './Dashboard/Settings';
 export { default as Homepage } from './App/Home';
 
 // TaskPage (User)
-export { default as TasksPage } from './App/Taskpage';
+export { default as TaskPage } from './App/TaskPage';
 
 // Teampage (User)
-export { default as TeamPage } from './App/Teampage';
+export { default as TeamPage } from './App/TeamPage';
+
+// Notification (User)
+export { default as NotificationPage } from './App/NotificationPage';

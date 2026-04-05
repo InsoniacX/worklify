@@ -4,23 +4,25 @@ import {
   UserPage,
   UserInput,
   UserEdit,
-  LoginPage,
+  AuthPage,
   ProductPage,
   ProductInput,
   ProductEdit,
   ProfilePage,
   SettingPage,
   Homepage,
-  TasksPage,
+  TaskPage,
   TeamPage,
+  NotificationPage,
 } from "@/pages";
 import { AdminRoute, ProtectedRoute } from "@/components";
+import SchedulePage from "./pages/App/SchedulePage";
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<AuthPage />} />
 
         {/* Admin Dashboard */}
         <Route
@@ -127,7 +129,7 @@ const App = () => {
           path="/app/tasks"
           element={
             <ProtectedRoute>
-              <TasksPage />
+              <TaskPage />
             </ProtectedRoute>
           }
         />
@@ -136,6 +138,22 @@ const App = () => {
           element={
             <ProtectedRoute>
               <TeamPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/app/schedule"
+          element={
+            <ProtectedRoute>
+              <SchedulePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/app/notifications"
+          element={
+            <ProtectedRoute>
+              <NotificationPage />
             </ProtectedRoute>
           }
         />

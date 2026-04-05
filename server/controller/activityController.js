@@ -1,4 +1,7 @@
 import Activity from "../model/activityModel.js";
+import User     from "../model/userModel.js"; 
+import Task     from "../model/taskModel.js";  
+import Team     from "../model/teamModel.js";  
 
 export const fetchAllActivities = async (req, res) => {
     try {

@@ -70,7 +70,7 @@ export const fetchById = async(req, res) => {
  */
 export const createUser = async(req, res) => {
     try {
-        const { name, email, password, address } = req.body;
+        const { name, email, password, address = null } = req.body;
 
         if (!name || !email || !password || !address) {
           return res.status(400).json({ message: "All fields are required" });
@@ -130,19 +130,6 @@ export const updateUser = async(req, res) => {
         res.status(200).json(updatedUser);
     } catch(error) {
         res.status(500).json({error: error.message});
-    }
-}
-
-/**
- * Show the Create User Page
- * METHOD: GET
- * URI: http://localhost:8080/api/user/new
- */
-export const createPage = async(req, res) => {
-    try {
-
-    } catch(error) {
-        res.status(404).json({error: error.message})
     }
 }
 

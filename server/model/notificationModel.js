@@ -14,11 +14,11 @@ const notificationSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    user: {
+    user: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
-    },
+    }],
     link: {
         type: String,
         default: null,
