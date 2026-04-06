@@ -17,6 +17,7 @@ import teamRouter from "./routes/teamRoute.js";
 import scheduleRouter from "./routes/scheduleRoute.js";
 import notificationRouter from "./routes/notificationRoute.js";
 import activityRouter from "./routes/activityRoute.js";
+import commentRouter from "./routes/commentRoute.js";
 
 /* Model */
 import "./model/userModel.js";
@@ -53,7 +54,7 @@ app.use("/api/team", protect, teamRouter);
 app.use("/api/schedule", protect, scheduleRouter);
 app.use("/api/notification", protect, notificationRouter);
 app.use("/api/activity", protect, activityRouter);
-
+app.use("/api/comment", commentRouter);
 
 const PORT = process.env.PORT || 8000;
 const MONGOURL = process.env.MONGO_URL;
