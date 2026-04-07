@@ -1,4 +1,5 @@
 import Comment from "../model/commentModel.js";
+import Activity from "../model/activityModel.js";
 import User from "../model/userModel.js";
 import Task from "../model/taskModel.js";
 import Notification from "../model/notificationModel.js";
@@ -23,17 +24,21 @@ export const postComment = async (req, res) => {
         const comment = new Comment({
             content,
             task: req.params.taskId,
-            user: req.params.id,
+            user: req.user.id,
         });
 
         const populated = await comment.populate("user", "name email picture");
 
-        await Activity.create({
-            action: "commented on Task",
-            user: req.user.id,
-            task: req.params.taskId,
-            meta: { content },
-        });
+        try {
+            await Activity.create({
+                action: "commented on Task",
+                user: req.user.id,
+                task: req.params.taskId,
+                meta: { content },
+            });
+        } catch(err) {
+            console.error(err.message);
+        }
 
         const saved = await populated.save();
 

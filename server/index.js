@@ -54,7 +54,7 @@ app.use("/api/team", protect, teamRouter);
 app.use("/api/schedule", protect, scheduleRouter);
 app.use("/api/notification", protect, notificationRouter);
 app.use("/api/activity", protect, activityRouter);
-app.use("/api/comment", commentRouter);
+app.use("/api/task/:taskId/comments", protect, commentRouter);
 
 const PORT = process.env.PORT || 8000;
 const MONGOURL = process.env.MONGO_URL;

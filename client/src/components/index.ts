@@ -8,6 +8,7 @@ export { default as Pill } from "./ui/Pill";
 export { default as Forms } from "./ui/Forms";
 export { default as SearchBar } from "./ui/SearchBar";
 export { default as Pagination } from "./ui/Pagination";
+export { default as TaskDetailPanel } from "./ui/TaskDetailPanel";
 
 /* Layout */
 export { default as DashboardLayout } from "./layout/Dashboard.layout";

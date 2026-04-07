@@ -62,3 +62,11 @@ export interface Activity {
   meta:      Record<string, any>;
   createdAt: string;
 }
+
+export interface Comment {
+  _id: string;
+  content: string;
+  user: { _id: string; name: string; picture: string; };
+  createdAt: string;
+  meta?: Record<string, any>;
+}

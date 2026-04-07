@@ -5,7 +5,7 @@ import {
     deleteComment 
 } from "../controller/commentController.js";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.get("/", getComments);
 router.post("/", postComment);

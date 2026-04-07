@@ -1,4 +1,4 @@
-import { AppLayout, Avatar } from "@/components";
+import { AppLayout, Avatar, TaskDetailPanel } from "@/components";
 import { useToast } from "@/context/ToastContext";
 import type { Task, Team } from "@/types";
 import { authFetch } from "@/utils/AuthFetch";
@@ -30,6 +30,7 @@ const TasksPage = () => {
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showForm, setShowForm] = useState<boolean>(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -301,7 +302,8 @@ const TasksPage = () => {
                 colTasks.map((task) => (
                   <div
                     key={task._id}
-                    className="bg-[#0f0f0d] border border-neutral-900 rounded-xl p-3 flex flex-col gap-2"
+                    onClick={() => setSelectedTask(task)}
+                    className="bg-[#0f0f0d] border border-neutral-900 rounded-xl p-3 flex flex-col gap-2 cursor-pointer hover:bg-[#0a0a0a]"
                   >
                     <p className="text-[13px] text-neutral-200 font-medium">
                       {task.title}
@@ -346,6 +348,7 @@ const TasksPage = () => {
                     {/* Status change */}
                     <select
                       value={task.status}
+                      onClick={(e) => e.stopPropagation()}
                       onChange={(e) =>
                         handleStatusChange(task._id, e.target.value as Status)
                       }
@@ -360,7 +363,10 @@ const TasksPage = () => {
 
                     {/* Delete */}
                     <button
-                      onClick={() => handleDelete(task._id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(task._id);
+                      }}
                       className="flex items-center gap-1 text-[11px] text-red-500 hover:text-red-400 transition-colors self-end"
                     >
                       <MdDelete size={12} /> Delete
@@ -372,6 +378,22 @@ const TasksPage = () => {
           );
         })}
       </div>
+      {selectedTask && (
+        <TaskDetailPanel
+          task={selectedTask}
+          onClose={() => setSelectedTask(null)}
+          onUpdate={(updated) => {
+            setTasks((prev) =>
+              prev.map((t) => (t._id === updated._id ? updated : t))
+            );
+            setSelectedTask(updated);
+          }}
+          onDelete={(id) => {
+            handleDelete(id);
+            setSelectedTask(null);
+          }}
+        />
+      )}
     </AppLayout>
   );
 };

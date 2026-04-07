@@ -113,8 +113,8 @@ export const createTask = async (req, res) => {
                 team:   team || null,
                 meta:   { taskTitle: title },
             });
-        } catch (actErr) {
-            console.log("Activity error:", actErr.message);
+        } catch (err) {
+            console.log("Activity error:", err.message);
         }
         
 
